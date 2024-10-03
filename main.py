@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS applications (
 CREATE TABLE IF NOT EXISTS reviews (
     review_id INTEGER PRIMARY KEY,
     application_id INTEGER REFERENCES applications (application_id),
-    reviewer_id INTEGER REFERENCES reviewers (reviewer_id)
+    reviewer_id INTEGER REFERENCES reviewers (reviewer_id),
     reviewer_amount INTEGER
     );
 CREATE TABLE IF NOT EXISTS reviewers (
