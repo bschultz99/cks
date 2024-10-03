@@ -20,12 +20,6 @@ CREATE TABLE IF NOT EXISTS applications (
     document_path VARCHAR(255),
     due_date DATE
     );
-CREATE TABLE IF NOT EXISTS reviews (
-    review_id INTEGER PRIMARY KEY,
-    application_id INTEGER REFERENCES applications (application_id),
-    reviewer_id INTEGER REFERENCES reviewers (reviewer_id),
-    reviewer_amount INTEGER
-    );
 CREATE TABLE IF NOT EXISTS reviewers (
     reviewer_id INTEGER PRIMARY KEY,
     channel_id VARCHAR(255),
@@ -35,6 +29,12 @@ CREATE TABLE IF NOT EXISTS reviewers (
     password VARCHAR(255),
     admin BOOLEAN DEFAULT FALSE
 );
+CREATE TABLE IF NOT EXISTS reviews (
+    review_id INTEGER PRIMARY KEY,
+    application_id INTEGER REFERENCES applications (application_id),
+    reviewer_id INTEGER REFERENCES reviewers (reviewer_id),
+    reviewer_amount INTEGER
+    );
 """
 
 
