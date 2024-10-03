@@ -60,6 +60,6 @@ if __name__ == "__main__":
                             password=os.getenv("POSTGRES_PASSWORD"),
                             port=os.getenv("PGPORT"))
     cursor = conn.cursor()
-    cursor.execute("DROP TABLE APPLICANTS;")
-    conn.commit()
+    #cursor.execute("DROP TABLE APPLICANTS;")
+    #conn.commit()
     app.run(debug=True, port=8080)
