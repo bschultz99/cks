@@ -5,49 +5,35 @@ app = Flask(__name__)
 
 
 CREATE_TABLES = """
+CREATE TABLE IF NOT EXISTS applicants (
+    applicant_id INTEGER PRIMARY KEY,
+    first_name VARCHAR(255),
+    last_name VARCHAR(255),
+    email VARCHAR(255),
+    password VARCHAR(255)
+    );
 CREATE TABLE IF NOT EXISTS applications (
-    slack_id VARCHAR(255) PRIMARY KEY,
-    name VARCHAR(255),
-    membership VARCHAR(255)
+    application_id INTEGER PRIMARY KEY,
+    submission_date DATE,
+    status VARCHAR(255),
+    applicant_id INTEGER REFERENCES applicants (applicant_id),
+    document_path VARCHAR(255),
+    due_date DATE
     );
-CREATE TABLE IF NOT EXISTS takedowns (
-    slack_id VARCHAR(255) PRIMARY KEY REFERENCES users(slack_id) ON DELETE CASCADE,
-    takedown_count INTEGER DEFAULT 0,
-    monday_lunch BOOLEAN DEFAULT FALSE,
-    monday_dinner BOOLEAN DEFAULT FALSE,
-    tuesday_lunch BOOLEAN DEFAULT FALSE,
-    tuesday_dinner BOOLEAN DEFAULT FALSE,
-    wednesday_lunch BOOLEAN DEFAULT FALSE,
-    wednesday_dinner BOOLEAN DEFAULT FALSE,
-    thursday_lunch BOOLEAN DEFAULT FALSE,
-    thursday_dinner BOOLEAN DEFAULT FALSE,
-    friday_lunch BOOLEAN DEFAULT FALSE,
-    friday_dinner BOOLEAN DEFAULT FALSE
+CREATE TABLE IF NOT EXISTS reviews (
+    review_id INTEGER PRIMARY KEY,
+    application_id INTEGER REFERENCES applications (application_id),
+    reviewer_id INTEGER REGERENCES reviewers (reviewer_id)
+    reviewer_amount INTEGER
     );
-CREATE TABLE IF NOT EXISTS takedown_channels (
-    takedown_slot VARCHAR(255) PRIMARY KEY,
-    channel_id VARCHAR(255)
-    );
-CREATE TABLE IF NOT EXISTS cleanup_channels (
-    cleanup VARCHAR(255) PRIMARY KEY,
-    channel_id VARCHAR(255)
-);
-CREATE TABLE IF NOT EXISTS positions (
-    position VARCHAR(255) PRIMARY KEY,
-    slack_id VARCHAR(255)
-    ); 
-CREATE TABLE IF NOT EXISTS cleanups (
-    slack_id VARCHAR(255) PRIMARY KEY REFERENCES users(slack_id) ON DELETE CASCADE,
-    used BOOLEAN DEFAULT FALSE,
-    disabled BOOLEAN DEFAULT FALSE,
-    captain BOOLEAN DEFAULT FALSE,
-    captain_count INTEGER DEFAULT 0,
-    kitchen INTEGER DEFAULT 0,
-    zero_deck INTEGER DEFAULT 0,
-    first_deck INTEGER DEFAULT 0,
-    bathrooms INTEGER DEFAULT 0,
-    stairs_halls_brojo_brolo INTEGER DEFAULT 0,
-    deck_brush INTEGER DEFAULT 0
+CREATE TABLE IF NOT EXISTS reviewers (
+    reviewer_id INTEGER PRIMARY KEY,
+    channel_id VARCHAR(255),
+    first_name VARCHAR(255),
+    last_name VARCHAR(255),
+    email VARCHAR(255),
+    password VARCHAR(255),
+    admin BOOLEAN DEFAULT FALSE
 );
 """
 
@@ -60,6 +46,6 @@ if __name__ == "__main__":
                             password=os.getenv("POSTGRES_PASSWORD"),
                             port=os.getenv("PGPORT"))
     cursor = conn.cursor()
-    #cursor.execute("DROP TABLE APPLICANTS;")
-    #conn.commit()
+    cursor.execute(CREATE_TABLES)
+    conn.commit()
     app.run(debug=True, port=8080)
