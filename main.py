@@ -13,6 +13,7 @@ app = Flask(__name__)
 @app.route('/newapplicant', methods=['POST'])
 def newApplicant():
     """Create a new applicant in the database and send them an email to fill out initial information."""
+    print("hi")
     with open('./Settings/new_applicants.csv', mode='r', newline='') as file:
         reader = csv.reader(file)
         for row in reader:
