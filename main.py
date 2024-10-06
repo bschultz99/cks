@@ -13,11 +13,12 @@ app = Flask(__name__)
 @app.route('/newapplicant', methods=['GET'])
 def newApplicant():
     """Create a new applicant in the database and send them an email to fill out initial information."""
-    print("hi")
+    characters = string.ascii_letters + string.digits + string.punctuation
     with open('./Settings/new_applicants.csv', mode='r', newline='') as file:
         reader = csv.reader(file)
         for row in reader:
-            print(row)
+            password = ''.join(secrets.choice(characters) for _ in range(12))
+            print(password)
     return Response(), 200
 
 
