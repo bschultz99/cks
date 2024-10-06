@@ -20,7 +20,7 @@ def hash_password(password):
     return hashed_password
 
 def check_password(input_password, stored_password):
-    if bcrypt.checkpw(input_password, stored_password):
+    if bcrypt.checkpw(input_password.encode('utf-8'), stored_password):
         return True
     return False
 
@@ -37,7 +37,7 @@ def newApplicant():
         for row in reader:
            password = generate_password()
            pass_hash = hash_password(password)
-           print(check_password(pass_hash, hash_password(password)))
+           print(check_password(password, pass_hash))
     return Response(), 200
 
 
