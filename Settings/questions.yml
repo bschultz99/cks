@@ -1,0 +1,10 @@
+scholarship_questions:
+  personal_information:
+    - question: "What is your IIT A Number?"
+      type: text
+      required: true
+    - question: "Information about Parent 1"
+  academic_information:
+  fraternity_information:
+  organization_information:
+  financial_information:

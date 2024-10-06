@@ -1,41 +1,37 @@
-from flask import Flask
+from flask import Flask, Response
+from queries import *
 import os, psycopg2
+import secrets
+import string
+import csv
 
 app = Flask(__name__)
 
 
-CREATE_TABLES = """
-CREATE TABLE IF NOT EXISTS applicants (
-    applicant_id INTEGER PRIMARY KEY,
-    first_name VARCHAR(255),
-    last_name VARCHAR(255),
-    email VARCHAR(255),
-    password VARCHAR(255)
-    );
-CREATE TABLE IF NOT EXISTS applications (
-    application_id INTEGER PRIMARY KEY,
-    submission_date DATE,
-    status VARCHAR(255),
-    applicant_id INTEGER REFERENCES applicants (applicant_id),
-    document_path VARCHAR(255),
-    due_date DATE
-    );
-CREATE TABLE IF NOT EXISTS reviewers (
-    reviewer_id INTEGER PRIMARY KEY,
-    channel_id VARCHAR(255),
-    first_name VARCHAR(255),
-    last_name VARCHAR(255),
-    email VARCHAR(255),
-    password VARCHAR(255),
-    admin BOOLEAN DEFAULT FALSE
-);
-CREATE TABLE IF NOT EXISTS reviews (
-    review_id INTEGER PRIMARY KEY,
-    application_id INTEGER REFERENCES applications (application_id),
-    reviewer_id INTEGER REFERENCES reviewers (reviewer_id),
-    reviewer_amount INTEGER
-    );
-"""
+# Applicant
+
+@app.route('/newapplicant', methods=['POST'])
+def newApplicant():
+    """Create a new applicant in the database and send them an email to fill out initial information."""
+    with open('./Settings/new_applicants.csv', mode='r', newline='') as file:
+        reader = csv.reader(file)
+        for row in reader:
+            print(row)
+    return Response(), 200
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -46,6 +42,14 @@ if __name__ == "__main__":
                             password=os.getenv("POSTGRES_PASSWORD"),
                             port=os.getenv("PGPORT"))
     cursor = conn.cursor()
+    cursor.execute("DROP TABLE applicants;")
+    conn.commit()
+    cursor.execute("DROP TABLE applications;")
+    conn.commit()
+    cursor.execute("DROP TABLE reviewers;")
+    conn.commit()
+    cursor.execute("DROP TABLE reviews;")
+    conn.commit()
     cursor.execute(CREATE_TABLES)
     conn.commit()
     app.run(debug=True, port=8080)
