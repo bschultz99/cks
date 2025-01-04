@@ -1,4 +1,4 @@
-from flask import Flask, Response
+from flask import Flask, Response, render_template
 from queries import *
 import os, psycopg2
 import secrets
@@ -44,7 +44,9 @@ def newApplicant():
 
 
 
-
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 
 
