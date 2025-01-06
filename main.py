@@ -47,7 +47,7 @@ def login():
     email = request.form['email']
     password = request.form['password']
     print(email, password)
-    return redirect(url_for('applicant')), 200
+    return redirect(url_for('applicant'))
 
 
 
