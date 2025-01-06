@@ -52,6 +52,14 @@ def login():
 
 
 
+
+
+# Web Pages
+
+@app.rout('/applicant')
+def applicant():
+    return render_template('applicant.html')
+
 @app.route('/')
 def index():
     return render_template('index.html')
