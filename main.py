@@ -1,4 +1,4 @@
-from flask import Flask, Response, render_template
+from flask import Flask, Response, render_template, redirect, url_for, request
 from queries import *
 import os, psycopg2
 import secrets
@@ -40,6 +40,14 @@ def newApplicant():
            print(check_password(password, pass_hash))
     return Response(), 200
 
+
+@app.route('/login', methods=['POST'])
+def login():
+    """Login an applicant or reviewer."""
+    email = request.form['email']
+    password = request.form['password']
+    print(email, password)
+    return redirect(url_for('applicant')), 200
 
 
 
