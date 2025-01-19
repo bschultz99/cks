@@ -77,6 +77,7 @@ if __name__ == "__main__":
                             password=os.getenv("POSTGRES_PASSWORD"),
                             port=os.getenv("PGPORT"))
     cursor = conn.cursor()
+    cursor.execute("DROP TABLE IF EXISTS applications;")
     cursor.execute(CREATE_TABLES)
     conn.commit()
     app.run(debug=True, host='0.0.0.0', port=8080)

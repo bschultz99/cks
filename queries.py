@@ -1,7 +1,5 @@
 """Queries"""
 
-
-
 # ***** TABLES *****
 CREATE_TABLES = """
 CREATE TABLE IF NOT EXISTS applicants (
@@ -13,11 +11,28 @@ CREATE TABLE IF NOT EXISTS applicants (
     );
 CREATE TABLE IF NOT EXISTS applications (
     application_id SERIAL PRIMARY KEY,
-    submission_date DATE,
-    status VARCHAR(255),
     applicant_id INTEGER REFERENCES applicants (applicant_id),
-    document_path VARCHAR(255),
-    due_date DATE
+    submission_date DATE,
+    due_date DATE,
+    status VARCHAR(255),
+    first_semester DATE,
+    estimated_graduation DATE,
+    active_next_year BOOLEAN,
+    live_in_house BOOLEAN,
+    first_major VARCHAR(255),
+    second_major VARCHAR(255),
+    first_minor VARCHAR(255),
+    second_minor VARCHAR(255),
+    cumulative_gpa FLOAT,
+    previous_gpa FLOAT,
+    semester_initiated DATE,
+    executive_posions_held INTEGER,
+    other_positions_held INTEGER,
+    fraternity_conferences_attended INTEGER,
+    semesters_involvement INTEGER,
+    other_org_executive_positions_held INTEGER,
+    other_org_positions_held INTEGER,
+    total_community_service_hours INTEGER
     );
 CREATE TABLE IF NOT EXISTS reviewers (
     reviewer_id SERIAL PRIMARY KEY,
@@ -35,7 +50,6 @@ CREATE TABLE IF NOT EXISTS reviews (
     reviewer_amount INTEGER
     );
 """
-
 
 # ***** APPLICANTS QUERIES *****
 
