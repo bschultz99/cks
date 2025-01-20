@@ -104,7 +104,7 @@ def newApplicant():
     cursor.execute(APPLICANT_CHECK, (email,))
     if  cursor.fetchall():
         print("Applicant already exists")
-        return redirect(url_for('error'))
+        return redirect(url_for('error', message='Applicant already exists'))
     password = generate_password()
     hashed_password = hash_password(password)
     send_new_applicant_email(email, password, first_name, last_name)
@@ -120,11 +120,11 @@ def login():
     cursor.execute(APPLICANT_LOGIN, (email,))
     stored_password = cursor.fetchone()
     if not stored_password:
-        return redirect(url_for('error'))
+        return redirect(url_for('error', message='Applicant does not exist'))
     if check_password(password, stored_password[0]):
         return redirect(url_for('applicant'))
     else:
-        return redirect(url_for('error'))
+        return redirect(url_for('error', message='Incorrect password'))
 
 @app.route('/forget_password', methods=['POST'])
 def forgetPassword():
@@ -133,7 +133,7 @@ def forgetPassword():
     cursor.execute(APPLICANT_CHECK, (email,))
     if not cursor.fetchone():
         print("Applicant does not exist")
-        return redirect(url_for('error'))
+        return redirect(url_for('error', message='Applicant does not exist'))
     password = generate_password()
     hashed_password = hash_password(password)
     cursor.execute(APPLICANT_NAME, (email,))
@@ -165,7 +165,8 @@ def index():
 
 @app.route('/error')
 def error():
-    return render_template('error.html')
+    error_message = request.args.get('message', 'An error occurred.')
+    return render_template('error.html', error_message=error_message)
 
 @app.route('/forget_password_page', methods=['GET'])
 def forgetPasswordPage():
