@@ -175,7 +175,7 @@ def index():
 
 @app.route('/error')
 def error():
-    return render_template('error.html')
+    return redirect('error.html')
 
 if __name__ == "__main__":
     if not code_executed:
