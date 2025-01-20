@@ -53,6 +53,17 @@ def send_new_applicant_email(email, password, first_name, last_name):
     Carroll Simons Scholarship Committee"""
     return send_email(email, text_body, subject)
 
+def send_forget_password_email(email, password, first_name, last_name):
+    subject = "Carroll Simons Scholarship Application Password Reset"
+    text_body = f"""Hello {first_name} {last_name},\n\n
+    Your password has been reset for the Carroll Simons Scholarship Application.\n
+    Your email is: {email}\n\n
+    Your new password is: {password}\n\n
+    Please login at https://cks-production.up.railway.app to complete your application.\n\n
+    Thank you,\n
+    Carroll Simons Scholarship Committee"""
+    return send_email(email, text_body, subject)
+
 # Application Score
 def accademic_score(cuumulative_gpa, semesters):
     TUNING_FACTOR = .3
@@ -88,7 +99,7 @@ def newApplicant():
     first_name = "Bryant" #request.form['first_name']
     last_name = "Schultz" #request.form['last_name']
     email = "bschultz1@hawk.iit.edu" #request.form['email']d
-    cursor.execute(NEW_APPLICANT_CHECK, (email,))
+    cursor.execute(APPLICANT_CHECK, (email,))
     if  cursor.fetchall():
         print("Applicant already exists")
         return Response(), 404 # Applicant already exists
@@ -113,9 +124,26 @@ def login():
     else:
         return Response(), 404 # Incorrect password
     
+@app.route('/forget_password_page', methods=['GET'])
+def forgetPasswordPage():
+    return render_template('forget_password.html')
 
-
-
+@app.route('/forget_password', methods=['POST'])
+def forgetPassword():
+    """Send an email to the applicant with their password."""
+    email = "bschultz1@hawk.iit.edu" #request.form['email']
+    cursor.execute(APPLICANT_CHECK, (email,))
+    if not cursor.fetchone():
+        print("Applicant does not exist")
+        return Response(), 404 # Applicant already exists
+    password = generate_password()
+    hashed_password = hash_password(password)
+    cursor.execute(APPLICANT_NAME, (email,))
+    first_name, last_name = cursor.fetchone()
+    send_new_applicant_email(email, password, first_name, last_name)
+    cursor.execute(NEW_APPLICANT_INSERT, (first_name, last_name, email, hashed_password))
+    conn.commit()
+    return index()
 # Admin
 
 @app.route('/start_applications', methods=['GET'])

@@ -54,8 +54,12 @@ CREATE TABLE IF NOT EXISTS reviews (
 
 # ***** APPLICANTS QUERIES *****
 
-NEW_APPLICANT_CHECK = '''
+APPLICANT_CHECK = '''
 SELECT email FROM applicants WHERE email = %s;
+'''
+
+APPLICANT_NAME = '''
+SELECT first_name, last_name FROM applicants WHERE email = %s;
 '''
 
 NEW_APPLICANT_INSERT = '''
