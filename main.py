@@ -5,7 +5,7 @@ import secrets
 import string
 import bcrypt
 import math
-import requests
+#import requests
 
 app = Flask(__name__)
 
@@ -142,6 +142,6 @@ if __name__ == "__main__":
         cursor = conn.cursor()
         cursor.execute(CREATE_TABLES)
         conn.commit()
-        send_email()
+        #send_email()
         code_executed = True
     app.run(debug=False, host='0.0.0.0', port=8080)
