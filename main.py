@@ -93,6 +93,8 @@ def total_score(gpa_score, fraternity_score, organization_score, community_servi
 
 # Applicant
 
+
+# Button Logic
 @app.route('/newapplicant', methods=['GET'])
 def newApplicant():
     """Create a new applicant in the database and send them an email to fill out initial information."""
@@ -102,7 +104,7 @@ def newApplicant():
     cursor.execute(APPLICANT_CHECK, (email,))
     if  cursor.fetchall():
         print("Applicant already exists")
-        return error()
+        return redirect(url_for('error'))
     password = generate_password()
     hashed_password = hash_password(password)
     send_new_applicant_email(email, password, first_name, last_name)
@@ -123,10 +125,6 @@ def login():
         return redirect(url_for('applicant'))
     else:
         return redirect(url_for('error'))
-    
-@app.route('/forget_password_page', methods=['GET'])
-def forgetPasswordPage():
-    return render_template('forget_password.html')
 
 @app.route('/forget_password', methods=['POST'])
 def forgetPassword():
@@ -135,7 +133,7 @@ def forgetPassword():
     cursor.execute(APPLICANT_CHECK, (email,))
     if not cursor.fetchone():
         print("Applicant does not exist")
-        return error()
+        return redirect(url_for('error'))
     password = generate_password()
     hashed_password = hash_password(password)
     cursor.execute(APPLICANT_NAME, (email,))
@@ -143,27 +141,19 @@ def forgetPassword():
     send_forget_password_email(email, password, first_name, last_name)
     cursor.execute(NEW_APPLICANT_INSERT, (first_name, last_name, email, hashed_password))
     conn.commit()
-    return index()
-
-@app.route('/change_password_page', methods=['GET'])
-def changePasswordPage():
-    return render_template('change_password.html')
-
-# Admin
+    return redirect(url_for('index'))
 
 @app.route('/start_applications', methods=['GET'])
 def startApplications():
     """Start the application process."""
     return Response(), 200
 
-
 @app.route('/close_applications', methods=['GET'])
 def closeApplications():
     """Close all applications."""
     return Response(), 200
 
-
-# Web Pages
+# Main Pages
 
 @app.route('/applicant')
 def applicant():
@@ -177,6 +167,11 @@ def index():
 def error():
     return render_template('error.html')
 
+@app.route('/forget_password_page', methods=['GET'])
+def forgetPasswordPage():
+    return render_template('forget_password.html')
+
+# Main Loop
 if __name__ == "__main__":
     if not code_executed:
         conn = psycopg2.connect(database=os.getenv("PGDATABASE"),
