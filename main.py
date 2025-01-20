@@ -28,6 +28,26 @@ def check_password(input_password, stored_password):
         return True
     return False
 
+# Emails
+def send_email(recipient, text_body, subject):
+    api_key = os.getenv("MAILGUN")
+    domain = os.getenv("MAILGUN_DOMAIN")
+    sender = "cks@{}".format(domain)
+    url = f'https://api.mailgun.net/v3/{domain}/messages'
+    response = requests.post(
+        url,
+        auth=('api', api_key),
+        data={'from': sender,
+              'to': recipient,
+              'subject': subject,
+              'text': text_body})
+    return response.status_code
+
+def send_new_applicant_email(email, password, first_name, last_name):
+    subject = "Carroll Simons Scholarship Application Login"
+    text_body = f"Hello {first_name} {last_name},\n\n An account has been created for you to apply for the Carroll Simons Scholarship. Your email is: {email} and your password is: {password}. Please login at https://cks-production.up.railway.app to complete your application.\n\nThank you,\nCarroll Simons Scholarship Committee"
+    return send_email(email, text_body, subject)
+
 # Application Score
 def accademic_score(cuumulative_gpa, semesters):
     TUNING_FACTOR = .3
@@ -69,28 +89,10 @@ def newApplicant():
         return Response(), 409 # Applicant already exists
     password = generate_password()
     hashed_password = hash_password(password)
-    print("Generting USER: ", first_name, last_name, email, password, hashed_password)
+    send_new_applicant_email(email, password, first_name, last_name)
     cursor.execute(NEW_APPLICANT_INSERT, (first_name, last_name, email, hashed_password))
     conn.commit()
     return Response(), 200
-
-
-# Emails
-def send_email():
-    api_key = os.getenv("MAILGUN")
-    domain = os.getenv("MAILGUN_DOMAIN")
-    sender = "cks@{}".format(domain)
-    recipient = "bryantschultz99@gmail.com"
-    text_body = 'This is a test of the cks system.'
-    url = f'https://api.mailgun.net/v3/{domain}/messages'
-    response = requests.post(
-        url,
-        auth=('api', api_key),
-        data={'from': sender,
-              'to': recipient,
-              'subject': 'CKS Application Login Information',
-              'text': text_body})
-    return response
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -125,11 +127,6 @@ def applicant():
 @app.route('/')
 def index():
     return render_template('index.html')
-
-
-
-
-
 
 
 if __name__ == "__main__":
