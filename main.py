@@ -91,7 +91,7 @@ def newApplicant():
     cursor.execute(NEW_APPLICANT_CHECK, (email,))
     if  cursor.fetchall():
         print("Applicant already exists")
-        return Response(), 409 # Applicant already exists
+        return Response(), 404 # Applicant already exists
     password = generate_password()
     hashed_password = hash_password(password)
     send_new_applicant_email(email, password, first_name, last_name)
