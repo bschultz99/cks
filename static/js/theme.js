@@ -9,3 +9,9 @@ if (document.getElementsByClassName('clean-product').length > 0) {
         vanillaZoom.init('#product-preview');
     };
 }
+
+document.querySelectorAll('.datepicker').forEach(function(field) {
+	var picker = new Pikaday({
+		field: field
+	});
+});
