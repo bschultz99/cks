@@ -61,9 +61,11 @@ def newApplicant():
     last_name = "Schultz" #request.form['last_name']
     email = "bschultz1@hawk.iit.edu" #request.form['email']
     if cursor.execute(NEW_APPLICANT_CHECK, (email,)) is not None:
+        print("Applicant already exists")
         return Response(), 409 # Applicant already exists
     password = generate_password()
     hashed_password = hash_password(password)
+    print("Generting USER: ", first_name, last_name, email, password, hashed_password)
     cursor.execute(NEW_APPLICANT_INSERT, (first_name, last_name, email, hashed_password))
     conn.commit()
     return Response(), 200
@@ -116,7 +118,6 @@ if __name__ == "__main__":
                             password=os.getenv("POSTGRES_PASSWORD"),
                             port=os.getenv("PGPORT"))
     cursor = conn.cursor()
-    cursor.execute("DROP TABLE IF EXISTS applications CASCADE;")
     cursor.execute(CREATE_TABLES)
     conn.commit()
     newApplicant()
