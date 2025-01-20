@@ -123,7 +123,7 @@ if __name__ == "__main__":
         cursor = conn.cursor()
         cursor.execute(CREATE_TABLES)
         conn.commit()
-        print("Tables Created")
-        #newApplicant()
+        newApplicant()
+        newApplicant()
         code_executed = True
     app.run(debug=False, host='0.0.0.0', port=8080)
