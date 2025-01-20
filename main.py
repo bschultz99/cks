@@ -62,7 +62,7 @@ def newApplicant():
     """Create a new applicant in the database and send them an email to fill out initial information."""
     first_name = "Bryant" #request.form['first_name']
     last_name = "Schultz" #request.form['last_name']
-    email = "bschultz1@hawk.iit.edu" #request.form['email']
+    email = "bschultz1@hawk.iit.edu" #request.form['email']d
     cursor.execute(NEW_APPLICANT_CHECK, (email,))
     if  cursor.fetchall():
         print("Applicant already exists")
