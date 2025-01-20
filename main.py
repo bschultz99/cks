@@ -24,7 +24,7 @@ def hash_password(password):
     return hashed_password.decode('utf-8')
 
 def check_password(input_password, stored_password):
-    if bcrypt.checkpw(input_password.encode('utf-8'), stored_password.enocde('utf-8')):
+    if bcrypt.checkpw(input_password.encode('utf-8'), stored_password.encode('utf-8')):
         return True
     return False
 
@@ -47,7 +47,7 @@ def send_new_applicant_email(email, password, first_name, last_name):
     subject = "Carroll Simons Scholarship Application Login"
     text_body = f"""Hello {first_name} {last_name},\n\n
     An account has been created for you to apply for the Carroll Simons Scholarship.\n
-    Your email is: {email} and your password is: {password}.\n\n
+    Your email is: {email} and your password is: {password}\n\n
     Please login at https://cks-production.up.railway.app to complete your application.\n\n
     Thank you,\n
     Carroll Simons Scholarship Committee"""
