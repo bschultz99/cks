@@ -24,7 +24,7 @@ def hash_password(password):
     return hashed_password.decode('utf-8')
 
 def check_password(input_password, stored_password):
-    if bcrypt.checkpw(input_password.encode('utf-8'), stored_password):
+    if bcrypt.checkpw(input_password.encode('utf-8'), stored_password.enocde('utf-8')):
         return True
     return False
 
