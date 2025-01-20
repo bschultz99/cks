@@ -3,11 +3,13 @@ from queries import *
 import os, psycopg2
 import secrets
 import string
-import csv
 import bcrypt
 import math
 
 app = Flask(__name__)
+
+# Global flag to ensure code runs only once
+code_executed = False
 
 # Helper Methods
 def generate_password():
@@ -112,13 +114,15 @@ def index():
 
 
 if __name__ == "__main__":
-    conn = psycopg2.connect(database=os.getenv("PGDATABASE"),
-                            host=os.getenv("PGHOST"),
-                            user=os.getenv("POSTGRES_USER"),
-                            password=os.getenv("POSTGRES_PASSWORD"),
-                            port=os.getenv("PGPORT"))
-    cursor = conn.cursor()
-    cursor.execute(CREATE_TABLES)
-    conn.commit()
-    newApplicant()
+    if not code_executed:
+        conn = psycopg2.connect(database=os.getenv("PGDATABASE"),
+                                host=os.getenv("PGHOST"),
+                                user=os.getenv("POSTGRES_USER"),
+                                password=os.getenv("POSTGRES_PASSWORD"),
+                                port=os.getenv("PGPORT"))
+        cursor = conn.cursor()
+        cursor.execute(CREATE_TABLES)
+        conn.commit()
+        newApplicant()
+        code_executed = True
     app.run(debug=True, host='0.0.0.0', port=8080)
