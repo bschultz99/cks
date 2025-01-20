@@ -79,16 +79,16 @@ def newApplicant():
 def send_email():
     api_key = os.getenv("MAILGUN")
     domain = os.getenv("MAILGUN_DOMAIN")
-    sender = "test@{}".format(domain)
+    sender = "cks@{}".format(domain)
     recipient = "bryantschultz99@gmail.com"
-    text_body = 'This is a test.'
+    text_body = 'This is a test of the cks system.'
     url = f'https://api.mailgun.net/v3/{domain}/messages'
     response = requests.post(
         url,
         auth=('api', api_key),
         data={'from': sender,
               'to': recipient,
-              'subject': 'Test',
+              'subject': 'CKS Application Login Information',
               'text': text_body})
     return response
 
