@@ -45,7 +45,12 @@ def send_email(recipient, text_body, subject):
 
 def send_new_applicant_email(email, password, first_name, last_name):
     subject = "Carroll Simons Scholarship Application Login"
-    text_body = f"Hello {first_name} {last_name},\n\n An account has been created for you to apply for the Carroll Simons Scholarship. Your email is: {email} and your password is: {password}. Please login at https://cks-production.up.railway.app to complete your application.\n\nThank you,\nCarroll Simons Scholarship Committee"
+    text_body = f"""Hello {first_name} {last_name},\n\n
+    An account has been created for you to apply for the Carroll Simons Scholarship.\n
+    Your email is: {email} and your password is: {password}.\n\n
+    Please login at https://cks-production.up.railway.app to complete your application.\n\n
+    Thank you,\n
+    Carroll Simons Scholarship Committee"""
     return send_email(email, text_body, subject)
 
 # Application Score
@@ -99,8 +104,15 @@ def login():
     """Login an applicant or reviewer."""
     email = request.form['email']
     password = request.form['password']
-    print(email, password)
-    return redirect(url_for('applicant'))
+    cursor.execute(APPLICANT_LOGIN, (email,))
+    stored_password = cursor.fetchone()
+    if not stored_password:
+        return Response(), 404 # Applicant not found
+    if check_password(password, stored_password[0]):
+        return redirect(url_for('applicant'))
+    else:
+        return Response(), 404 # Incorrect password
+    
 
 
 

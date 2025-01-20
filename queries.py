@@ -70,3 +70,7 @@ DO UPDATE SET first_name = excluded.first_name,
               email = excluded.email,
               password = excluded.password
 '''
+
+APPLICANT_LOGIN = '''
+SELECT password FROM applicants WHERE email = %s;
+'''
