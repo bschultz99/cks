@@ -32,7 +32,8 @@ CREATE TABLE IF NOT EXISTS applications (
     semesters_involvement INTEGER,
     other_org_executive_positions_held INTEGER,
     other_org_positions_held INTEGER,
-    total_community_service_hours INTEGER
+    total_community_service_hours INTEGER,
+    score FLOAT
     );
 CREATE TABLE IF NOT EXISTS reviewers (
     reviewer_id SERIAL PRIMARY KEY,
@@ -53,7 +54,11 @@ CREATE TABLE IF NOT EXISTS reviews (
 
 # ***** APPLICANTS QUERIES *****
 
-APPLICANTS_INSERT = '''
+NEW_APPLICANT_CHECK = '''
+SELECT email FROM applicants WHERE email = %s;
+'''
+
+NEW_APPLICANT_INSERT = '''
 INSERT INTO applicants(first_name,
                        last_name,
                        email,

@@ -5,6 +5,7 @@ import secrets
 import string
 import csv
 import bcrypt
+import math
 
 app = Flask(__name__)
 
@@ -17,27 +18,54 @@ def generate_password():
 def hash_password(password):
     salt = bcrypt.gensalt()
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
-    return hashed_password
+    return hashed_password.decode('utf-8')
 
 def check_password(input_password, stored_password):
     if bcrypt.checkpw(input_password.encode('utf-8'), stored_password):
         return True
     return False
 
+# Application Score
+def accademic_score(cuumulative_gpa, semesters):
+    TUNING_FACTOR = .3
+    if cuumulative_gpa < 3.0:
+        gpa_score = 0
+    else:
+        gpa_score = cuumulative_gpa * (1 + TUNING_FACTOR * math.sqrt(semesters))
+    return gpa_score * 10
 
+def fraternity_score(executive_positions, other_positions, conferences):
+    EXECUTIVE_POINTS = 8
+    OTHER_POINTS = 4
+    CONFERENCE_POINTS = 2
+    return (executive_positions * EXECUTIVE_POINTS) + (other_positions * OTHER_POINTS) + (conferences * CONFERENCE_POINTS)
 
+def organization_score(executive_positions, other_positions):
+    EXECUTIVE_POINTS = 4
+    OTHER_POINTS = 2
+    return (executive_positions * EXECUTIVE_POINTS) + (other_positions * OTHER_POINTS)
+
+def community_service_score(hours, semesters_active):
+    HOURS_POINTS = .2 # 50 Hours = 1 Exec position
+    return (hours - (16 * semesters_active)) * HOURS_POINTS
+
+def total_score(gpa_score, fraternity_score, organization_score, community_service_score):
+    return gpa_score + fraternity_score + organization_score + community_service_score
 
 # Applicant
 
 @app.route('/newapplicant', methods=['GET'])
 def newApplicant():
     """Create a new applicant in the database and send them an email to fill out initial information."""
-    with open('./Settings/new_applicants.csv', mode='r', newline='') as file:
-        reader = csv.reader(file)
-        for row in reader:
-           password = generate_password()
-           pass_hash = hash_password(password)
-           print(check_password(password, pass_hash))
+    first_name = "Bryant" #request.form['first_name']
+    last_name = "Schultz" #request.form['last_name']
+    email = "bschultz1@hawk.iit.edu" #request.form['email']
+    if cursor.execute(NEW_APPLICANT_CHECK, (email,)) is not None:
+        return Response(), 409 # Applicant already exists
+    password = generate_password()
+    hashed_password = hash_password(password)
+    cursor.execute(NEW_APPLICANT_INSERT, (first_name, last_name, email, hashed_password))
+    conn.commit()
     return Response(), 200
 
 
@@ -51,7 +79,18 @@ def login():
 
 
 
+# Admin
 
+@app.route('/start_applications', methods=['GET'])
+def startApplications():
+    """Start the application process."""
+    return Response(), 200
+
+
+@app.route('/close_applications', methods=['GET'])
+def closeApplications():
+    """Close all applications."""
+    return Response(), 200
 
 
 # Web Pages
@@ -77,6 +116,8 @@ if __name__ == "__main__":
                             password=os.getenv("POSTGRES_PASSWORD"),
                             port=os.getenv("PGPORT"))
     cursor = conn.cursor()
+    cursor.execute("DROP TABLE IF EXISTS applications CASCADE;")
     cursor.execute(CREATE_TABLES)
     conn.commit()
+    newApplicant()
     app.run(debug=True, host='0.0.0.0', port=8080)
