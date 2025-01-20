@@ -140,7 +140,7 @@ def forgetPassword():
     hashed_password = hash_password(password)
     cursor.execute(APPLICANT_NAME, (email,))
     first_name, last_name = cursor.fetchone()
-    send_new_applicant_email(email, password, first_name, last_name)
+    send_forget_password_email(email, password, first_name, last_name)
     cursor.execute(NEW_APPLICANT_INSERT, (first_name, last_name, email, hashed_password))
     conn.commit()
     return index()
