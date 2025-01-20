@@ -5,6 +5,7 @@ import secrets
 import string
 import bcrypt
 import math
+import requests
 
 app = Flask(__name__)
 
@@ -74,6 +75,23 @@ def newApplicant():
     return Response(), 200
 
 
+# Emails
+def send_email():
+    api_key = os.getenv("MAILGUN")
+    domain = os.getenv("MAILGUN_DOMAIN")
+    sender = "test@{}".format(domain)
+    recipient = "bryantschultz99@gmail.com"
+    text_body = 'This is a test.'
+    url = f'https://api.mailgun.net/v3/{domain}/messages'
+    response = requests.post(
+        url,
+        auth=('api', api_key),
+        data={'from': sender,
+              'to': recipient,
+              'subject': 'Test',
+              'text': text_body})
+    return response
+
 @app.route('/login', methods=['POST'])
 def login():
     """Login an applicant or reviewer."""
@@ -124,7 +142,6 @@ if __name__ == "__main__":
         cursor = conn.cursor()
         cursor.execute(CREATE_TABLES)
         conn.commit()
-        newApplicant()
-        newApplicant()
+        send_email()
         code_executed = True
     app.run(debug=False, host='0.0.0.0', port=8080)
