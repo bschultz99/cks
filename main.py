@@ -118,11 +118,11 @@ def login():
     cursor.execute(APPLICANT_LOGIN, (email,))
     stored_password = cursor.fetchone()
     if not stored_password:
-        return error()
+        return redirect(url_for('error'))
     if check_password(password, stored_password[0]):
         return redirect(url_for('applicant'))
     else:
-        return error()
+        return redirect(url_for('error'))
     
 @app.route('/forget_password_page', methods=['GET'])
 def forgetPasswordPage():
@@ -175,7 +175,7 @@ def index():
 
 @app.route('/error')
 def error():
-    return redirect('error.html')
+    return render_template('error.html')
 
 if __name__ == "__main__":
     if not code_executed:
