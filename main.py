@@ -62,7 +62,8 @@ def newApplicant():
     first_name = "Bryant" #request.form['first_name']
     last_name = "Schultz" #request.form['last_name']
     email = "bschultz1@hawk.iit.edu" #request.form['email']
-    if cursor.execute(NEW_APPLICANT_CHECK, (email,)) is not None:
+    cursor.execute(NEW_APPLICANT_CHECK, (email,))
+    if  cursor.fetchall() is not None:
         print("Applicant already exists")
         return Response(), 409 # Applicant already exists
     password = generate_password()
