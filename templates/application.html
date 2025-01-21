@@ -84,8 +84,10 @@
             var formData = new FormData(form);
             var data = {};
             formData.forEach((value, key) => {
+                console.log(value);
                 data[key] = value;
             });
+            console.log(data);
 
             navigator.sendBeacon('/save_application', JSON.stringify(data));
         });
