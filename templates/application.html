@@ -82,25 +82,29 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var email = document.getElementById('email').value;
-            console.log("Email:", email); // Debugging: Check if email is set correctly
             fetch(`/load_application?email=${encodeURIComponent(email)}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log("Response status:", response.status);
-                    if (data.status !== 'no_data') {
-                        for (const [key, value] of Object.entries(data)) {
-                            const input = document.getElementById(key);
-                            if (input) {
-                                input.value = value;
-                            } else {
-                                const textarea = document.querySelector(`textarea[name="${key}"]`);
-                                if (textarea) {
-                                    textarea.value = value;
-                                }
-                            }
+            .then(response => {
+                console.log("Response status:", response.status); // Log the status
+                if (!response.ok) {
+                    throw new Error(`Error fetching application data: ${response.statusText}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.status !== 'no_data') {
+                    Object.entries(data).forEach(([key, value]) => {
+                        const inputElement = document.querySelector(`#${key}, textarea[name="${key}"], input[name="${key}"], select[name="${key}"]`);
+                        if (inputElement) {
+                            inputElement.value = value;
+                        } else {
+                            console.warn(`No matching element found for key: ${key}`); // Debugging
                         }
-                    }
-                });
+                    });
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+            });
         });
     </script>
     <script>
