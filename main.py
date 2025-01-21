@@ -1,4 +1,4 @@
-from flask import Flask, Response, render_template, redirect, url_for, request
+from flask import Flask, Response, render_template, redirect, url_for, request, jsonify
 from queries import *
 import os, psycopg2
 import secrets
@@ -7,7 +7,6 @@ import bcrypt
 import math
 import requests
 import json
-import jsonify
 
 app = Flask(__name__)
 
