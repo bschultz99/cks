@@ -92,6 +92,18 @@ def community_service_score(hours, semesters_active):
 def total_score(gpa_score, fraternity_score, organization_score, community_service_score):
     return gpa_score + fraternity_score + organization_score + community_service_score
 
+def generate_scores():
+    cursor.execute("SELECT * FROM applications")
+    applications = cursor.fetchall()
+    for application in applications:
+        gpa_score = accademic_score(application[10], application[16])
+        fraternity_score = fraternity_score(application[13], application[14], application[15])
+        organization_score = organization_score(application[18], application[19])
+        community_service_score = community_service_score(application[22], application[21])
+        score = total_score(gpa_score, fraternity_score, organization_score, community_service_score)
+        cursor.execute("UPDATE applications SET score = %s WHERE application_id = %s", (score, application[0]))
+    conn.commit()
+
 # Application
 
 def save_application_data(data):
