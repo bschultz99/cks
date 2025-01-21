@@ -168,9 +168,9 @@ def error():
     error_message = request.args.get('message', 'An error occurred.')
     return render_template('error.html', error_message=error_message)
 
-@app.route('/forget_password_page', methods=['GET'])
-def forgetPasswordPage():
-    return render_template('forget_password.html')
+@app.route('/forgot_password_page', methods=['GET'])
+def forgotPasswordPage():
+    return render_template('forgot_password.html')
 
 # Main Loop
 if __name__ == "__main__":
