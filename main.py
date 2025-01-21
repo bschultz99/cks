@@ -97,7 +97,7 @@ def total_score(gpa_score, fraternity_score, organization_score, community_servi
 def save_application_data(data):
     # General Information
     email = data.get('email') if data.get('email') else None
-    anumber = data.get('anum') if data.get('anum') else None
+    anumber = data.get('anum') if data.get('a_number') else None
     first_semester = data.get('firstsemester') if data.get('firstsemester') else None
     expected_graduation = data.get('expectedgraduation') if data.get('expectedgraduation') else None
     active_next_year = data.get('activemember') if data.get('activemember') else None
