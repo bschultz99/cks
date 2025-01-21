@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS applicants (
     applicant_id SERIAL PRIMARY KEY,
     first_name VARCHAR(255),
     last_name VARCHAR(255),
-    email VARCHAR(255),
+    email VARCHAR(255) UNIQUE,
     password VARCHAR(255)
     );
 CREATE TABLE IF NOT EXISTS applications (
@@ -69,7 +69,7 @@ INSERT INTO applicants(first_name,
                        email,
                        password)
 VALUES (%s, %s, %s, %s)
-ON CONFLICT (applicant_id)
+ON CONFLICT (email)
 DO UPDATE SET first_name = excluded.first_name,
               last_name = excluded.last_name,
               email = excluded.email,
