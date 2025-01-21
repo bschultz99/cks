@@ -125,7 +125,7 @@ def login():
     if check_password(password, stored_password[0]):
         cursor.execute(APPLICANT_NAME, (email,))
         name = cursor.fetchone()
-        return redirect(url_for('applicant', applicant_first_name=name[0]))
+        return redirect(url_for('application', applicant_first_name=name[0]))
     else:
         return redirect(url_for('error', message='Incorrect password'))
 
@@ -157,10 +157,10 @@ def closeApplications():
 
 # Main Pages
 
-@app.route('/applicant')
-def applicant():
+@app.route('/application')
+def application():
     applicant_name = request.args.get('applicant_first_name', '')
-    return redirect(url_for('application', applicant_first_name=applicant_name))
+    return render_template('application.html', applicant_first_name=applicant_name)
 
 @app.route('/')
 def index():
