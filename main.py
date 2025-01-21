@@ -96,33 +96,33 @@ def total_score(gpa_score, fraternity_score, organization_score, community_servi
 
 def save_application_data(data):
     # General Information
-    email = data['email']
-    anumber = data['anum']
-    first_semester = data['firstsemester']
-    expected_graduation = data['expectedgraduation']
-    active_next_year = data['activemember']
-    live_in_house = data['living']
+    email = data['email'] if data['email'] else None
+    anumber = data['anum'] if data['anum'] else None
+    first_semester = data['firstsemester'] if data['firstsemester'] else None
+    expected_graduation = data['expectedgraduation'] if data['expectedgraduation'] else None
+    active_next_year = data['activemember'] if data['activemember'] else None
+    live_in_house = data['living'] if data['living'] else None
     # Academic Information
-    first_major = data['firstmajor']
-    second_major = data['secondmajor']
-    first_minor = data['firstminor']
-    second_minor = data['secondminor']
-    cuumulative_gpa = data['cumulativegpa']
-    previous_gpa = data['semestergpa']
+    first_major = data['firstmajor'] if data['firstmajor'] else None
+    second_major = data['secondmajor'] if data['secondmajor'] else None
+    first_minor = data['firstminor'] if data['firstminor'] else None
+    second_minor = data['secondminor'] if data['secondminor'] else None
+    cuumulative_gpa = data['cumulativegpa'] if data['cumulativegpa'] else None
+    previous_gpa = data['semestergpa'] if data['semestergpa'] else None
     # Fraternity Information
-    semester_initiated = data['initiated']
-    executive_positions_held = data['execpositions']
-    other_positions_held = data['otherpositions']
-    fraternity_conferences_attended = data['conferences']
-    fraternity_text = data['frat-text']
+    semester_initiated = data['initiated'] if data['initiated'] else None
+    executive_positions_held = data['execpositions'] if data['execpositions'] else None
+    other_positions_held = data['otherpositions'] if data['otherpositions'] else None
+    fraternity_conferences_attended = data['conferences'] if data['conferences'] else None
+    fraternity_text = data['frat-text'] if data['frat-text'] else None
     # Other Organization Information
-    semesters_involvement = data['otherorgs']
-    other_org_executive_positions_held = data['otherorgexec']
-    other_org_positions_held = data['otherorgpos']
-    other_org_text = data['org-message']
+    semesters_involvement = data['otherorgs'] if data['otherorgs'] else None
+    other_org_executive_positions_held = data['otherorgexec'] if data['otherorgexec'] else None
+    other_org_positions_held = data['otherorgpos'] if data['otherorgpos'] else None
+    other_org_text = data['org-message'] if data['org-message'] else None
     # Community Service Information
-    total_community_service_hours = data['comservice']
-    community_service_text = data['service-message']
+    total_community_service_hours = data['comservice'] if data['comservice'] else None
+    community_service_text = data['service-message'] if data['service-message'] else None
 
     cursor.execute(APPLICANT_ID, (email,))
     applicant_id = cursor.fetchone()[0]
