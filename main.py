@@ -126,8 +126,12 @@ def save_application_data(data):
 
     cursor.execute(APPLICANT_ID, (email,))
     applicant_id = cursor.fetchone()[0]
-    cursor.execute(NEW_APPLICATION_INSERT, (applicant_id, anumber, first_semester, expected_graduation, active_next_year, live_in_house, first_major, second_major, first_minor, second_minor, cumulative_gpa, previous_gpa, semester_initiated, executive_positions_held, other_positions_held, fraternity_conferences_attended, fraternity_text, semesters_involvement, other_org_executive_positions_held, other_org_positions_held, other_org_text, total_community_service_hours, community_service_text))
-    conn.commit()
+    try:
+        cursor.execute(NEW_APPLICATION_INSERT, (applicant_id, anumber, first_semester, expected_graduation, active_next_year, live_in_house, first_major, second_major, first_minor, second_minor, cumulative_gpa, previous_gpa, semester_initiated, executive_positions_held, other_positions_held, fraternity_conferences_attended, fraternity_text, semesters_involvement, other_org_executive_positions_held, other_org_positions_held, other_org_text, total_community_service_hours, community_service_text))
+        conn.commit()
+    except Exception as e:
+        conn.rollback()
+        print(e)
     return True
 
 
