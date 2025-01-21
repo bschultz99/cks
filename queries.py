@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS applicants (
 CREATE TABLE IF NOT EXISTS applications (
     application_id SERIAL PRIMARY KEY,
     applicant_id INTEGER REFERENCES applicants (applicant_id),
+    a_number VARCHAR(255),
     submission_date DATE,
     due_date DATE,
     status VARCHAR(255),
