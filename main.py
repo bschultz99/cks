@@ -65,6 +65,7 @@ def send_forgot_password_email(email, password, first_name, last_name):
     Carroll Simons Scholarship Committee"""
     return send_email(email, text_body, subject)
 
+
 # Application Score
 def accademic_score(cumulative_gpa, semesters):
     TUNING_FACTOR = .3
@@ -90,6 +91,8 @@ def community_service_score(hours, semesters_active):
     return (hours - (16 * semesters_active)) * HOURS_POINTS
 
 def total_score(gpa_score, fraternity_score, organization_score, community_service_score):
+    if gpa_score < 3.0:
+        return 0
     return gpa_score + fraternity_score + organization_score + community_service_score
 
 def generate_scores():
