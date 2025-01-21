@@ -208,7 +208,7 @@ def saveApplication():
     data = request.get_data(as_text=True)
     data = json.loads(data)
     save_application_data(data)
-    return "Success"
+    return Response(), 200
 
 @app.route('/')
 def index():

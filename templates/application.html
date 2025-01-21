@@ -69,7 +69,7 @@
                         <div class="mb-3"><label class="form-label" for="comservice">What is the total&nbsp; hours of community service you have while in the fraternity?</label><input class="form-control" type="number" name="comservice" id="comservice" required="" min="0" step="1"></div>
                         <div class="mb-3"><label class="form-label" for="service-message">Explain what community service events you have involved in.</label><textarea class="form-control form-control-lg" id="service-message" name="service-message" maxlength="10000" required=""></textarea></div>
                     </div>
-                    <div id="Submit" class="mb-3"><button class="btn btn-primary btn-lg d-block w-100" type="submit">Save</button></div>
+                    <div id="Submit" class="mb-3"><button class="btn btn-primary btn-lg d-block w-100" type="button" id="save-button">Save</button></div>
                 </form>
             </div>
         </section>
@@ -90,6 +90,36 @@
 
             navigator.sendBeacon('/save_application', JSON.stringify(data));
         });
+    </script>
+    <script>
+        document.getElementById('save-button').addEventListener('click', function () {
+                var form = document.getElementById('application-form');
+                var formData = new FormData(form);
+                var data = {};
+                formData.forEach((value, key) => {
+                    data[key] = value;
+                });
+
+                fetch('/save_application', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.status === 'success') {
+                        alert('Application saved successfully!');
+                    } else {
+                        alert('Failed to save application.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while saving the application.');
+                });
+            });
     </script>
 </body>
 
