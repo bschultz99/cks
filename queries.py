@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS applicants (
     );
 CREATE TABLE IF NOT EXISTS applications (
     application_id SERIAL PRIMARY KEY,
-    applicant_id INTEGER REFERENCES applicants (applicant_id),
+    applicant_id INTEGER REFERENCES applicants (applicant_id) UNIQUE,
     a_number VARCHAR(255),
     first_semester DATE,
     estimated_graduation DATE,
