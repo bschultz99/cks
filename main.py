@@ -66,12 +66,12 @@ def send_forgot_password_email(email, password, first_name, last_name):
     return send_email(email, text_body, subject)
 
 # Application Score
-def accademic_score(cuumulative_gpa, semesters):
+def accademic_score(cumulative_gpa, semesters):
     TUNING_FACTOR = .3
-    if cuumulative_gpa < 3.0:
+    if cumulative_gpa < 3.0:
         gpa_score = 0
     else:
-        gpa_score = cuumulative_gpa * (1 + TUNING_FACTOR * math.sqrt(semesters))
+        gpa_score = cumulative_gpa * (1 + TUNING_FACTOR * math.sqrt(semesters))
     return gpa_score * 10
 
 def fraternity_score(executive_positions, other_positions, conferences):
@@ -126,7 +126,7 @@ def save_application_data(data):
 
     cursor.execute(APPLICANT_ID, (email,))
     applicant_id = cursor.fetchone()[0]
-    cursor.execute(NEW_APPLICATION_INSERT, (applicant_id, anumber, first_semester, expected_graduation, active_next_year, live_in_house, first_major, second_major, first_minor, second_minor, cuumulative_gpa, previous_gpa, semester_initiated, executive_positions_held, other_positions_held, fraternity_conferences_attended, fraternity_text, semesters_involvement, other_org_executive_positions_held, other_org_positions_held, other_org_text, total_community_service_hours, community_service_text))
+    cursor.execute(NEW_APPLICATION_INSERT, (applicant_id, anumber, first_semester, expected_graduation, active_next_year, live_in_house, first_major, second_major, first_minor, second_minor, cumulative_gpa, previous_gpa, semester_initiated, executive_positions_held, other_positions_held, fraternity_conferences_attended, fraternity_text, semesters_involvement, other_org_executive_positions_held, other_org_positions_held, other_org_text, total_community_service_hours, community_service_text))
     conn.commit()
     return True
 
