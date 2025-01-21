@@ -163,7 +163,7 @@ def application():
     applicant_name = request.args.get('applicant_first_name', '')
     if applicant_name == '':
         return redirect(url_for('error', message='Please login.'))
-    return render_template('application.html', applicant_first_name=applicant_name)
+    return render_template('application.html', applicant_first_name=applicant_name, email=request.args.get('applicant_email'))
 
 @app.route('/save_application', methods=['POST'])
 def saveApplication():
