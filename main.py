@@ -169,7 +169,7 @@ def application():
 def saveApplication():
     data = request.get_data(as_text=True)
     data = json.loads(data)
-    print(data)
+    print(data.get('firstmajor'))
     return "Success"
 
 @app.route('/')
