@@ -120,6 +120,7 @@ def login():
     cursor.execute(APPLICANT_LOGIN, (email,))
     stored_password = cursor.fetchone()
     if not stored_password:
+        print("oh no")
         return redirect(url_for('error', message='Applicant does not exist'))
     if check_password(password, stored_password[0]):
         cursor.execute(APPLICANT_NAME, (email,))
