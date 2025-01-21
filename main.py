@@ -96,33 +96,33 @@ def total_score(gpa_score, fraternity_score, organization_score, community_servi
 
 def save_application_data(data):
     # General Information
-    email = data.get('email')
-    anumber = data.get('anum')
-    first_semester = data.get('firstsemester')
-    expected_graduation = data.get('expectedgraduation')
-    active_next_year = data.get('activemember')
-    live_in_house = data.get('living')
+    email = data.get('email') if data.get('email') else None
+    anumber = data.get('anum') if data.get('anum') else None
+    first_semester = data.get('firstsemester') if data.get('firstsemester') else None
+    expected_graduation = data.get('expectedgraduation') if data.get('expectedgraduation') else None
+    active_next_year = data.get('activemember') if data.get('activemember') else None
+    live_in_house = data.get('living') if data.get('living') else None
     # Academic Information
-    first_major = data.get('firstmajor')
-    second_major = data.get('secondmajor')
-    first_minor = data.get('firstminor')
-    second_minor = data.get('secondminor')
-    cumulative_gpa = data.get('cumulativegpa')
-    previous_gpa = data.get('semestergpa')
+    first_major = data.get('firstmajor') if data.get('firstmajor') else None
+    second_major = data.get('secondmajor') if data.get('secondmajor') else None
+    first_minor = data.get('firstminor') if data.get('firstminor') else None
+    second_minor = data.get('secondminor') if data.get('secondminor') else None
+    cumulative_gpa = data.get('cumulativegpa') if data.get('cumulativegpa') else None
+    previous_gpa = data.get('semestergpa') if data.get('semestergpa') else None
     # Fraternity Information
-    semester_initiated = data.get('initiated')
-    executive_positions_held = data.get('execpositions')
-    other_positions_held = data.get('otherpositions')
-    fraternity_conferences_attended = data.get('conferences')
-    fraternity_text = data.get('frat-text')
+    semester_initiated = data.get('initiated') if data.get('initiated') else None
+    executive_positions_held = data.get('execpositions')  if data.get('execpositions') else None
+    other_positions_held = data.get('otherpositions') if data.get('otherpositions') else None
+    fraternity_conferences_attended = data.get('conferences') if data.get('conferences') else None
+    fraternity_text = data.get('frat-text') if data.get('frat-text') else None
     # Other Organization Information
-    semesters_involvement = data.get('otherorgs')
-    other_org_executive_positions_held = data.get('otherorgexec')
-    other_org_positions_held = data.get('otherorgpos')
-    other_org_text = data.get('org-message')
+    semesters_involvement = data.get('otherorgs') if data.get('otherorgs') else None
+    other_org_executive_positions_held = data.get('otherorgexec') if data.get('otherorgexec') else None
+    other_org_positions_held = data.get('otherorgpos') if data.get('otherorgpos') else None
+    other_org_text = data.get('org-message') if data.get('org-message') else None
     # Community Service Information
-    total_community_service_hours = data.get('comservice')
-    community_service_text = data.get('service-message')
+    total_community_service_hours = data.get('comservice') if data.get('comservice') else None
+    community_service_text = data.get('service-message') if data.get('service-message') else None
 
     cursor.execute(APPLICANT_ID, (email,))
     applicant_id = cursor.fetchone()[0]
