@@ -166,9 +166,9 @@ def application():
 
 @app.route('/save_application', methods=['POST'])
 def saveApplication():
-    data = request.form
+    data = request.get_json()
     print(data)
-    return 0
+    return "Success"
 
 @app.route('/')
 def index():
