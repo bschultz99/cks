@@ -92,7 +92,45 @@ def community_service_score(hours, semesters_active):
 def total_score(gpa_score, fraternity_score, organization_score, community_service_score):
     return gpa_score + fraternity_score + organization_score + community_service_score
 
-# Applicant
+# Application
+
+def save_application_data(data):
+    # General Information
+    email = data['email']
+    anumber = data['anum']
+    first_semester = data['firstsemester']
+    expected_graduation = data['expectedgraduation']
+    active_next_year = data['activemember']
+    live_in_house = data['living']
+    # Academic Information
+    first_major = data['firstmajor']
+    second_major = data['secondmajor']
+    first_minor = data['firstminor']
+    second_minor = data['secondminor']
+    cuumulative_gpa = data['cumulativegpa']
+    previous_gpa = data['semestergpa']
+    # Fraternity Information
+    semester_initiated = data['initiated']
+    executive_positions_held = data['execpositions']
+    other_positions_held = data['otherpositions']
+    fraternity_conferences_attended = data['conferences']
+    fraternity_text = data['frat-text']
+    # Other Organization Information
+    semesters_involvement = data['otherorgs']
+    other_org_executive_positions_held = data['otherorgexec']
+    other_org_positions_held = data['otherorgpos']
+    other_org_text = data['org-message']
+    # Community Service Information
+    total_community_service_hours = data['comservice']
+    community_service_text = data['service-message']
+
+    cursor.execute(APPLICANT_ID, (email,))
+    applicant_id = cursor.fetchone()[0]
+    cursor.execute(NEW_APPLICATION_INSERT, (applicant_id, anumber, first_semester, expected_graduation, active_next_year, live_in_house, first_major, second_major, first_minor, second_minor, cuumulative_gpa, previous_gpa, semester_initiated, executive_positions_held, other_positions_held, fraternity_conferences_attended, fraternity_text, semesters_involvement, other_org_executive_positions_held, other_org_positions_held, other_org_text, total_community_service_hours, community_service_text))
+    conn.commit()
+    return True
+
+
 
 
 # Button Logic
@@ -169,7 +207,7 @@ def application():
 def saveApplication():
     data = request.get_data(as_text=True)
     data = json.loads(data)
-    print(f"Data: {data}")
+    save_application_data(data)
     return "Success"
 
 @app.route('/')
@@ -194,8 +232,8 @@ if __name__ == "__main__":
                                 password=os.getenv("POSTGRES_PASSWORD"),
                                 port=os.getenv("PGPORT"))
         cursor = conn.cursor()
-        #cursor.execute("DROP TABLE IF EXISTS applicants CASCADE;")
-        #conn.commit()
+        cursor.execute("DROP TABLE IF EXISTS applications CASCADE;")
+        conn.commit()
         cursor.execute(CREATE_TABLES)
         conn.commit()
         code_executed = True

@@ -13,9 +13,6 @@ CREATE TABLE IF NOT EXISTS applications (
     application_id SERIAL PRIMARY KEY,
     applicant_id INTEGER REFERENCES applicants (applicant_id),
     a_number VARCHAR(255),
-    submission_date DATE,
-    due_date DATE,
-    status VARCHAR(255),
     first_semester DATE,
     estimated_graduation DATE,
     active_next_year BOOLEAN,
@@ -30,15 +27,17 @@ CREATE TABLE IF NOT EXISTS applications (
     executive_posions_held INTEGER,
     other_positions_held INTEGER,
     fraternity_conferences_attended INTEGER,
+    fraternity_text VARCHAR(10000),
     semesters_involvement INTEGER,
     other_org_executive_positions_held INTEGER,
     other_org_positions_held INTEGER,
+    other_org_text VARCHAR(10000),
     total_community_service_hours INTEGER,
+    community_service_text VARCHAR(10000),
     score FLOAT
     );
 CREATE TABLE IF NOT EXISTS reviewers (
     reviewer_id SERIAL PRIMARY KEY,
-    channel_id VARCHAR(255),
     first_name VARCHAR(255),
     last_name VARCHAR(255),
     email VARCHAR(255),
@@ -73,9 +72,65 @@ ON CONFLICT (email)
 DO UPDATE SET first_name = excluded.first_name,
               last_name = excluded.last_name,
               email = excluded.email,
-              password = excluded.password
+              password = excluded.password;
+'''
+
+APPLICANT_ID = '''
+SELECT applicant_id FROM applicants WHERE email = %s;
 '''
 
 APPLICANT_LOGIN = '''
 SELECT password FROM applicants WHERE email = %s;
 '''
+
+# ***** APPLICATION QUERIES *****
+NEW_APPLICATION_INSERT = '''
+INSERT INTO applications(applicant_id,
+a_number,
+first_semester,
+estimated_graduation,
+active_next_year,
+live_in_house,
+first_major,
+second_major,
+first_minor,
+second_minor,
+cumulative_gpa,
+previous_gpa,
+semester_initiated,
+executive_posions_held,
+other_positions_held,
+fraternity_conferences_attended,
+fraternity_text,
+semesters_involvement,
+other_org_executive_positions_held,
+other_org_positions_held,
+other_org_text,
+total_community_service_hours,
+community_service_text)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+ON CONFLICT (applicant_id) DO UPDATE SET
+a_number = excluded.a_number,
+first_semester = excluded.first_semester,
+estimated_graduation = excluded.estimated_graduation,
+active_next_year = excluded.active_next_year,
+live_in_house = excluded.live_in_house,
+first_major = excluded.first_major,
+second_major = excluded.second_major,
+first_minor = excluded.first_minor,
+second_minor = excluded.second_minor,
+cumulative_gpa = excluded.cumulative_gpa,
+previous_gpa = excluded.previous_gpa,
+semester_initiated = excluded.semester_initiated,
+executive_posions_held = excluded.executive_posions_held,
+other_positions_held = excluded.other_positions_held,
+fraternity_conferences_attended = excluded.fraternity_conferences_attended,
+fraternity_text = excluded.fraternity_text,
+semesters_involvement = excluded.semesters_involvement,
+other_org_executive_positions_held = excluded.other_org_executive_positions_held,
+other_org_positions_held = excluded.other_org_positions_held,
+other_org_text = excluded.other_org_text,
+total_community_service_hours = excluded.total_community_service_hours,
+community_service_text = excluded.community_service_text;
+'''
+# On start of applications, application_id, applicant_id
