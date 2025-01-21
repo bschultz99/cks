@@ -168,8 +168,9 @@ def application():
 @app.route('/save_application', methods=['POST'])
 def saveApplication():
     data = request.get_data(as_text=True)
+    print(f"Data: {data}")
     data = json.loads(data)
-    print(data.get('firstmajor'))
+    print(f"Data: {data}")
     return "Success"
 
 @app.route('/')
