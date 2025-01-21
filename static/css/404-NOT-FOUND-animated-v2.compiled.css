@@ -206,7 +206,7 @@
 }
 
 .stars {
-  background: url(../static/img/ipxcloud/overlay_stars.svg);
+  background: url(../img/ipxcloud/overlay_stars.svg);
   background-repeat: repeat;
   background-size: contain;
   background-position: left top;
