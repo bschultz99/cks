@@ -7,6 +7,7 @@ import bcrypt
 import math
 import requests
 import json
+import jsonify
 
 app = Flask(__name__)
 
@@ -134,7 +135,18 @@ def save_application_data(data):
         return {"status": "error", "message": str(e)}
     return {"status": "success"}
 
-
+@app.route('/load_application', methods=['GET'])
+def load_application():
+    email = request.args.get('email')
+    cursor.execute("SELECT * FROM applications WHERE applicant_id = (SELECT applicant_id FROM applicants WHERE email = %s)", (email,))
+    data = cursor.fetchone()
+    
+    if data:
+        columns = [desc[0] for desc in cursor.description]
+        application_data = dict(zip(columns, data))
+        return jsonify(application_data)
+    else:
+        return jsonify({"status": "no_data"})
 
 
 # Button Logic

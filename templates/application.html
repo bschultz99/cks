@@ -80,6 +80,27 @@
     <script src="static/js/pikaday.min.js"></script>
     <script src="static/js/theme.js"></script>
     <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var email = document.getElementById('email').value;
+            fetch(`/load_application?email=${encodeURIComponent(email)}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status !== 'no_data') {
+                        for (const [key, value] of Object.entries(data)) {
+                            const input = document.getElementById(key);
+                            if (input) {
+                                input.value = value;
+                            } else {
+                                const textarea = document.querySelector(`textarea[name="${key}"]`);
+                                if (textarea) {
+                                    textarea.value = value;
+                                }
+                            }
+                        }
+                    }
+                });
+    </script>
+    <script>
         window.addEventListener('beforeunload', function (event) {
             var form = document.getElementById('application-form');
             var formData = new FormData(form);
