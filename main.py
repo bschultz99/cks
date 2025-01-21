@@ -6,6 +6,7 @@ import string
 import bcrypt
 import math
 import requests
+import json
 
 app = Flask(__name__)
 
@@ -166,7 +167,8 @@ def application():
 
 @app.route('/save_application', methods=['POST'])
 def saveApplication():
-    data = request.get_json()
+    data = request.get_data(as_text=True)
+    data = json.loads(data)
     print(data)
     return "Success"
 
