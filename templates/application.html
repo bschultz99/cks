@@ -34,39 +34,39 @@
                         <div class="mb-3"><label class="form-label" for="expectedgraduation">When are you expecting to graduate from IIT?</label><input class="form-control" name="expectedgraduation" id="expectedgraduation" type="date" required=""></div>
                         <div class="mb-3"><label class="form-label" for="activemember">Will you be an active member next year?</label><select class="form-select" name="activemember" id="activemember" required="">
                                 <option disabled selected value> -- select an option -- </option>
-                                <option value="10">No</option>
-                                <option value="1">Yes</option>
+                                <option value="No">No</option>
+                                <option value="Yes">Yes</option>
                             </select></div>
-                        <div class="mb-3"><label class="form-label" for="living">Where do you plan on living next semester?</label><select class="form-select" id="living" required="">
+                        <div class="mb-3"><label class="form-label" for="living">Where do you plan on living next semester?</label><select class="form-select" id="living" name="living" required="">
                                 <option disabled selected value> -- select an option -- </option>
-                                <option value="10">Townsman</option>
-                                <option value="1">In-House</option>
+                                <option value="Townsman">Townsman</option>
+                                <option value="In-House">In-House</option>
                             </select></div>
                     </div>
                     <div id="Academics"><label class="form-label" style="font-weight: bold;font-size: 20px;">Academics</label>
-                        <div class="mb-3"><label class="form-label" for="firstmajor">First Major</label><input class="form-control" type="text" id="firstmajor" required=""></div>
-                        <div class="mb-3"><label class="form-label" for="secondmajor">Second Major (If you have one)</label><input class="form-control" type="text" id="secondmajor"></div>
-                        <div class="mb-3"><label class="form-label" for="firstminor">First Minor (If you have one)</label><input class="form-control" type="text" id="firstminor"></div>
-                        <div class="mb-3"><label class="form-label" for="secondminor">Second Minor (If you have one)</label><input class="form-control" type="text" id="secondminor"></div>
-                        <div class="mb-3"><label class="form-label" for="cumulativegpa">Cumulative GPA</label><input class="form-control" type="number" id="cumulativegpa" required="" min="0.0" max="4.0" step=".01"></div>
-                        <div class="mb-3"><label class="form-label" for="cumulativegpa-1">Previous Semester GPA</label><input class="form-control" type="number" id="cumulativegpa-1" required="" min="0.0" max="4.0" step=".01"></div>
+                        <div class="mb-3"><label class="form-label" for="firstmajor">First Major</label><input class="form-control" type="text" id="firstmajor" name="firstmajor" required=""></div>
+                        <div class="mb-3"><label class="form-label" for="secondmajor">Second Major (If you have one)</label><input class="form-control" type="text" name="secondmajor" id="secondmajor"></div>
+                        <div class="mb-3"><label class="form-label" for="firstminor">First Minor (If you have one)</label><input class="form-control" type="text" name="firstminor" id="firstminor"></div>
+                        <div class="mb-3"><label class="form-label" for="secondminor">Second Minor (If you have one)</label><input class="form-control" type="text" name="secondminor" id="secondminor"></div>
+                        <div class="mb-3"><label class="form-label" for="cumulativegpa">Cumulative GPA</label><input class="form-control" type="number" id="cumulativegpa" name="cumulativegpa" required="" min="0.0" max="4.0" step=".01"></div>
+                        <div class="mb-3"><label class="form-label" for="semestergpa">Previous Semester GPA</label><input class="form-control" type="number" id="semestergpa" name="semestergpa" required="" min="0.0" max="4.0" step=".01"></div>
                     </div>
                     <div id="Fraternity"><label class="form-label" style="font-weight: bold;font-size: 20px;">Fraternity</label>
-                        <div class="mb-3"><label class="form-label" for="initiated">When were you initiated into the Fraternity?</label><input class="form-control" id="initiated" type="date" required=""></div>
-                        <div class="mb-3"><label class="form-label" for="execpositions">How many Executive Board positions have you held in the fraternity?</label><input class="form-control" type="number" id="execpositions" required="" min="0" step="1"></div>
-                        <div class="mb-3"><label class="form-label" for="otherpositions">How many non-executive positions have you held in the fraternity?</label><input class="form-control" type="number" id="otherpositions" required="" min="0" step="1"></div>
-                        <div class="mb-3"><label class="form-label" for="conferences">How many Fraternity Conferences have you attended?</label><input class="form-control" type="number" id="conferences" required="" min="0" step="1"></div>
-                        <div class="mb-3"><label class="form-label" for="frat-text">Explain how you have contributed to the Fraternity.</label><textarea class="form-control form-control-lg" id="frat-text" required="" maxlength="10000"></textarea></div>
+                        <div class="mb-3"><label class="form-label" for="initiated">When were you initiated into the Fraternity?</label><input class="form-control" id="initiated" type="date" name="initiated" required=""></div>
+                        <div class="mb-3"><label class="form-label" for="execpositions">How many Executive Board positions have you held in the fraternity?</label><input class="form-control" type="number"  id="execpositions" name="execpositions" required="" min="0" step="1"></div>
+                        <div class="mb-3"><label class="form-label" for="otherpositions">How many non-executive positions have you held in the fraternity?</label><input class="form-control" type="number" id="otherpositions" name="otherpositions" required="" min="0" step="1"></div>
+                        <div class="mb-3"><label class="form-label" for="conferences">How many Fraternity Conferences have you attended?</label><input class="form-control" type="number" id="conferences" name="conferences" required="" min="0" step="1"></div>
+                        <div class="mb-3"><label class="form-label" for="frat-text">Explain how you have contributed to the Fraternity.</label><textarea class="form-control form-control-lg" id="frat-text" name="frat-text" required="" maxlength="10000"></textarea></div>
                     </div>
                     <div id="Organizations"><label class="form-label" style="font-weight: bold;font-size: 20px;">Organizations</label>
-                        <div class="mb-3"><label class="form-label" for="otherorgs">How many semesters have you been involved in other IIT organizations?</label><input class="form-control" type="number" id="otherorgs" required="" min="0" step="1"></div>
-                        <div class="mb-3"><label class="form-label" for="otherorgexec">How many Executive positions have you held in&nbsp;other IIT organizations?</label><input class="form-control" type="number" id="otherorgexec" required="" min="0" step="1"></div>
-                        <div class="mb-3"><label class="form-label" for="otherorgpos">How many non-executive positions have you held in other IIT organizations?</label><input class="form-control" type="number" id="otherorgpos" required="" min="0" step="1"></div>
-                        <div class="mb-3"><label class="form-label" for="org-message">Explain how you have been involved at IIT outside of the Fraternity.</label><textarea class="form-control form-control-lg" id="org-message" maxlength="10000" required=""></textarea></div>
+                        <div class="mb-3"><label class="form-label" for="otherorgs">How many semesters have you been involved in other IIT organizations?</label><input class="form-control" type="number" id="otherorgs" name="otherorgs" required="" min="0" step="1"></div>
+                        <div class="mb-3"><label class="form-label" for="otherorgexec">How many Executive positions have you held in&nbsp;other IIT organizations?</label><input class="form-control" type="number" name="otherorgexec" id="otherorgexec" required="" min="0" step="1"></div>
+                        <div class="mb-3"><label class="form-label" for="otherorgpos">How many non-executive positions have you held in other IIT organizations?</label><input class="form-control" type="number" name="otherorgpos" id="otherorgpos" required="" min="0" step="1"></div>
+                        <div class="mb-3"><label class="form-label" for="org-message">Explain how you have been involved at IIT outside of the Fraternity.</label><textarea class="form-control form-control-lg" name="org-message" id="org-message" maxlength="10000" required=""></textarea></div>
                     </div>
                     <div id="Community-Service"><label class="form-label" style="font-weight: bold;font-size: 20px;">Community Service</label>
-                        <div class="mb-3"><label class="form-label" for="comservice">What is the total&nbsp; hours of community service you have while in the fraternity?</label><input class="form-control" type="number" id="comservice" required="" min="0" step="1"></div>
-                        <div class="mb-3"><label class="form-label" for="service-message">Explain what community service events you have involved in.</label><textarea class="form-control form-control-lg" id="service-message" maxlength="10000" required=""></textarea></div>
+                        <div class="mb-3"><label class="form-label" for="comservice">What is the total&nbsp; hours of community service you have while in the fraternity?</label><input class="form-control" type="number" name="comservice" id="comservice" required="" min="0" step="1"></div>
+                        <div class="mb-3"><label class="form-label" for="service-message">Explain what community service events you have involved in.</label><textarea class="form-control form-control-lg" id="service-message" name="service-message" maxlength="10000" required=""></textarea></div>
                     </div>
                     <div id="Submit" class="mb-3"><button class="btn btn-primary btn-lg d-block w-100" type="submit">Save</button></div>
                 </form>
