@@ -53,7 +53,7 @@ def send_new_applicant_email(email, password, first_name, last_name):
     Carroll Simons Scholarship Committee"""
     return send_email(email, text_body, subject)
 
-def send_forget_password_email(email, password, first_name, last_name):
+def send_forgot_password_email(email, password, first_name, last_name):
     subject = "Carroll Simons Scholarship Application Password Reset"
     text_body = f"""Hello {first_name} {last_name},\n\n
     Your password has been reset for the Carroll Simons Scholarship Application.\n
@@ -126,8 +126,8 @@ def login():
     else:
         return redirect(url_for('error', message='Incorrect password'))
 
-@app.route('/forget_password', methods=['POST'])
-def forgetPassword():
+@app.route('/forgot_password', methods=['POST'])
+def forgotPassword():
     """Send an email to the applicant with their password."""
     email = "bschultz1@hawk.iit.edu" #request.form['email']
     cursor.execute(APPLICANT_CHECK, (email,))
@@ -138,7 +138,7 @@ def forgetPassword():
     hashed_password = hash_password(password)
     cursor.execute(APPLICANT_NAME, (email,))
     first_name, last_name = cursor.fetchone()
-    send_forget_password_email(email, password, first_name, last_name)
+    send_forgot_password_email(email, password, first_name, last_name)
     cursor.execute(NEW_APPLICANT_INSERT, (first_name, last_name, email, hashed_password))
     conn.commit()
     return redirect(url_for('index'))
