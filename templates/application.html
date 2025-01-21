@@ -83,6 +83,7 @@
             var form = document.getElementById('application-form');
             var formData = new FormData(form);
             var data = {};
+            data[email] = '{{ email }}';
             formData.forEach((value, key) => {
                 data[key] = value;
             });

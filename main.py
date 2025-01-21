@@ -126,7 +126,7 @@ def login():
     if check_password(password, stored_password[0]):
         cursor.execute(APPLICANT_NAME, (email,))
         name = cursor.fetchone()
-        return redirect(url_for('application', applicant_first_name=name[0]))
+        return redirect(url_for('application', applicant_first_name=name[0], applicant_email=email))
     else:
         return redirect(url_for('error', message='Incorrect password'))
 
@@ -168,7 +168,6 @@ def application():
 @app.route('/save_application', methods=['POST'])
 def saveApplication():
     data = request.get_data(as_text=True)
-    print(f"Data: {data}")
     data = json.loads(data)
     print(f"Data: {data}")
     return "Success"
