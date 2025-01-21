@@ -82,9 +82,11 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var email = document.getElementById('email').value;
+            console.log("Email:", email); // Debugging: Check if email is set correctly
             fetch(`/load_application?email=${encodeURIComponent(email)}`)
                 .then(response => response.json())
                 .then(data => {
+                    console.log("Response status:", response.status);
                     if (data.status !== 'no_data') {
                         for (const [key, value] of Object.entries(data)) {
                             const input = document.getElementById(key);

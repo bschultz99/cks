@@ -137,14 +137,17 @@ def save_application_data(data):
 @app.route('/load_application', methods=['GET'])
 def load_application():
     email = request.args.get('email')
+    print(f"Email received: {email}")  # Debugging: Log the email received
     cursor.execute("SELECT * FROM applications WHERE applicant_id = (SELECT applicant_id FROM applicants WHERE email = %s)", (email,))
     data = cursor.fetchone()
     
     if data:
         columns = [desc[0] for desc in cursor.description]
         application_data = dict(zip(columns, data))
+        print(f"Application data: {application_data}")  # Debugging: Log the application data
         return jsonify(application_data)
     else:
+        print("No data found")  # Debugging: Log that no data was found
         return jsonify({"status": "no_data"})
 
 
