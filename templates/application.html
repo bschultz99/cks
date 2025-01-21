@@ -68,7 +68,7 @@
                         <div class="mb-3"><label class="form-label" for="comservice">What is the total&nbsp; hours of community service you have while in the fraternity?</label><input class="form-control" type="number" id="comservice" required="" min="0" step="1"></div>
                         <div class="mb-3"><label class="form-label" for="service-message">Explain what community service events you have involved in.</label><textarea class="form-control form-control-lg" id="service-message" maxlength="10000" required=""></textarea></div>
                     </div>
-                    <div id="Submit" class="mb-3"><button class="btn btn-primary btn-lg d-block w-100" type="submit">Submit</button></div>
+                    <div id="Submit" class="mb-3"><button class="btn btn-primary btn-lg d-block w-100" type="submit">Save</button></div>
                 </form>
             </div>
         </section>
@@ -78,6 +78,18 @@
     <script src="static/js/Animated-Text-Background-animatedTextBackground.js"></script>
     <script src="static/js/pikaday.min.js"></script>
     <script src="static/js/theme.js"></script>
+    <script>
+        window.addEventListener('beforeunload', function (event) {
+            var form = document.getElementById('application-form');
+            var formData = new FormData(form);
+            var data = {};
+            formData.forEach((value, key) => {
+                data[key] = value;
+            });
+
+            navigator.sendBeacon('/save_form_data', JSON.stringify(data));
+        });
+    </script>
 </body>
 
 </html>

@@ -164,6 +164,12 @@ def application():
         return redirect(url_for('error', message='Please login.'))
     return render_template('application.html', applicant_first_name=applicant_name)
 
+@app.route('/save_application', methods=['POST'])
+def saveApplication():
+    data = request.form
+    print(data)
+    return 0
+
 @app.route('/')
 def index():
     return render_template('index.html')
