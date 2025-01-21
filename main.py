@@ -160,6 +160,8 @@ def closeApplications():
 @app.route('/application')
 def application():
     applicant_name = request.args.get('applicant_first_name', '')
+    if applicant_name == '':
+        return redirect(url_for('error', message='Please login.'))
     return render_template('application.html', applicant_first_name=applicant_name)
 
 @app.route('/')
