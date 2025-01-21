@@ -131,8 +131,8 @@ def save_application_data(data):
         conn.commit()
     except Exception as e:
         conn.rollback()
-        print(e)
-    return True
+        return {"status": "error", "message": str(e)}
+    return {"status": "success"}
 
 
 
@@ -211,8 +211,7 @@ def application():
 def saveApplication():
     data = request.get_data(as_text=True)
     data = json.loads(data)
-    save_application_data(data)
-    return Response(), 200
+    return save_application_data(data)
 
 @app.route('/')
 def index():
