@@ -35,8 +35,7 @@ def send_pdf():
     #cursor.execute("SELECT * FROM applications WHERE applicant_id = 1;")
     #data = cursor.fetchone()
     email_body = render_template('application.html', applicant_first_name='Bryant', email='bschultz1@hawk.iit.edu')
-    send_email('bryatschultz99@gmail.com', email_body, 'CKS Email Test')
-    return 200
+    return send_email('bryatschultz99@gmail.com', email_body, 'CKS Email Test')
 
 
 # Emails
