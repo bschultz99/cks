@@ -213,7 +213,9 @@ def forgotPassword():
     """Send an email to the applicant with their password."""
     email = request.form['email']
     cursor.execute(APPLICANT_CHECK, (email, ))
-    if not cursor.fetchone():
+    temp = cursor.fetchone()
+    print(temp)
+    if not temp:
         return redirect(url_for('error', message='Applicant does not exist'))
     password = generate_password()
     hashed_password = hash_password(password)
