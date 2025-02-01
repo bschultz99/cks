@@ -212,8 +212,9 @@ def login():
 def forgotPassword():
     """Send an email to the applicant with their password."""
     email = "bschultz1@hawk.iit.edu" #request.form['email']
-    cursor.execute(APPLICANT_CHECK, (email,))
-    if not cursor.fetchone():
+    cursor.execute(APPLICANT_CHECK, (email, password,))
+    results = cursor.fetchone()
+    if not results[0] and not results[1]:
         return redirect(url_for('error', message='Applicant does not exist'))
     password = generate_password()
     hashed_password = hash_password(password)
