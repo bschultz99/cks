@@ -88,6 +88,7 @@ SELECT password FROM applicants WHERE email = %s;
 # ***** APPLICATION QUERIES *****
 NEW_APPLICATION_INSERT = '''
 INSERT INTO applications(applicant_id,
+updated_at,
 a_number,
 first_semester,
 estimated_graduation,
@@ -109,8 +110,9 @@ other_org_executive_positions_held,
 other_org_positions_held,
 other_org_text,
 total_community_service_hours,
+last_semester_community_service_hours,
 community_service_text)
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 ON CONFLICT (applicant_id) DO UPDATE SET
 a_number = excluded.a_number,
 first_semester = excluded.first_semester,
