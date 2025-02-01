@@ -51,6 +51,7 @@ def send_email(recipient, text_body, subject):
               'to': recipient,
               'subject': subject,
               'text': text_body})
+    print(response)
     return response.status_code
 
 def send_new_applicant_email(email, password, first_name, last_name):
