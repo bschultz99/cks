@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS applications (
     first_semester DATE,
     estimated_graduation DATE,
     active_next_year VARCHAR(255),
-    live_in_house BOOLEAN,
+    live_in_house VARCHAR(255),
     first_major VARCHAR(255),
     second_major VARCHAR(255),
     first_minor VARCHAR(255),
