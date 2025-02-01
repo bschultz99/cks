@@ -244,7 +244,7 @@ def application():
 def saveApplication():
     data = request.get_data(as_text=True)
     data = json.loads(data)
-    return save_application_data(data)
+    print(save_application_data(data))
 
 @app.route('/')
 def index():
