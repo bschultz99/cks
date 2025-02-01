@@ -57,7 +57,7 @@ CREATE TABLE IF NOT EXISTS reviews (
 # ***** APPLICANTS QUERIES *****
 
 APPLICANT_CHECK = '''
-SELECT email, password FROM applicants WHERE email = %s;
+SELECT password FROM applicants WHERE email = %s;
 '''
 
 APPLICANT_NAME = '''
