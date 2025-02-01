@@ -142,7 +142,7 @@ def save_application_data(data):
     community_service_text = data.get('community_service_text') if data.get('community_service_text') else None
 
     updated_at = datetime.now()
-
+    print(first_semester, estimated_graduation)
     cursor.execute(APPLICANT_ID, (email,))
     applicant_id = cursor.fetchone()[0]
     try:
