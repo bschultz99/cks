@@ -135,7 +135,7 @@ def save_application_data(data):
     semesters_involvement = data.get('semesters_involvement') if data.get('semesters_involvement') else None
     other_org_executive_positions_held = data.get('other_org_executive_positions_held') if data.get('other_org_executive_positions_held') else None
     other_org_positions_held = data.get('other_org_positions_held') if data.get('other_org_positions_held') else None
-    other_org_text = data.get('org-other_org_text') if data.get('other_org_text') else None
+    other_org_text = data.get('other_org_text') if data.get('other_org_text') else None
     # Community Service Information
     total_community_service_hours = data.get('total_community_service_hours') if data.get('total_community_service_hours') else None
     last_semester_community_service_hours = data.get('last_semester_community_service_hours') if data.get('last_semester_community_service_hours') else None
@@ -163,6 +163,9 @@ def load_application():
     if data:
         columns = [desc[0] for desc in cursor.description]
         application_data = dict(zip(columns, data))
+        for key, value in application_data.items():
+            if isinstance(value, datetime):
+                application_data[key] = value.strftime('%Y-%m-%d')
         print(f"Application data: {application_data}")  # Debugging: Log the application data
         return jsonify(application_data)
     else:

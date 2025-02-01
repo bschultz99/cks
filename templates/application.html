@@ -97,6 +97,9 @@
                     Object.entries(data).forEach(([key, value]) => {
                         const inputElement = document.querySelector(`#${key}, textarea[name="${key}"], input[name="${key}"], select[name="${key}"]`);
                         if (inputElement) {
+                            if (inputElement.type === 'date') {
+                                value = new Date(value).toISOString().split('T')[0];
+                            }
                             inputElement.value = value;
                         } else {
                             console.warn(`No matching element found for key: ${key}`); // Debugging
