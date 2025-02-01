@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS applications (
     other_org_positions_held INTEGER,
     other_org_text VARCHAR(10000),
     total_community_service_hours INTEGER,
+    last_semester_community_service_hours INTEGER,
     community_service_text VARCHAR(10000),
     score FLOAT
     );

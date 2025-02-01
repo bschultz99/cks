@@ -137,12 +137,13 @@ def save_application_data(data):
     other_org_text = data.get('org-other_org_text') if data.get('other_org_text') else None
     # Community Service Information
     total_community_service_hours = data.get('total_community_service_hours') if data.get('total_community_service_hours') else None
+    last_semester_community_service_hours = data.get('last_semester_community_service_hours') if data.get('last_semester_community_service_hours') else None
     community_service_text = data.get('community_service_text') if data.get('community_service_text') else None
 
     cursor.execute(APPLICANT_ID, (email,))
     applicant_id = cursor.fetchone()[0]
     try:
-        cursor.execute(NEW_APPLICATION_INSERT, (applicant_id, a_number, first_semester, estimated_graduation, active_next_year, live_in_house, first_major, second_major, first_minor, second_minor, cumulative_gpa, previous_gpa, semester_initiated, executive_positions_held, other_positions_held, fraternity_conferences_attended, fraternity_text, semesters_involvement, other_org_executive_positions_held, other_org_positions_held, other_org_text, total_community_service_hours, community_service_text))
+        cursor.execute(NEW_APPLICATION_INSERT, (applicant_id, a_number, first_semester, estimated_graduation, active_next_year, live_in_house, first_major, second_major, first_minor, second_minor, cumulative_gpa, previous_gpa, semester_initiated, executive_positions_held, other_positions_held, fraternity_conferences_attended, fraternity_text, semesters_involvement, other_org_executive_positions_held, other_org_positions_held, other_org_text, total_community_service_hours, last_semester_community_service_hours, community_service_text))
         conn.commit()
     except Exception as e:
         conn.rollback()
@@ -264,8 +265,8 @@ if __name__ == "__main__":
                                 password=os.getenv("POSTGRES_PASSWORD"),
                                 port=os.getenv("PGPORT"))
         cursor = conn.cursor()
-        #cursor.execute("DROP TABLE IF EXISTS applications CASCADE;")
-        #conn.commit()
+        cursor.execute("DROP TABLE IF EXISTS applications CASCADE;")
+        conn.commit()
         cursor.execute(CREATE_TABLES)
         conn.commit()
         code_executed = True
