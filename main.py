@@ -7,6 +7,7 @@ import bcrypt
 import math
 import requests
 import json
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -140,10 +141,12 @@ def save_application_data(data):
     last_semester_community_service_hours = data.get('last_semester_community_service_hours') if data.get('last_semester_community_service_hours') else None
     community_service_text = data.get('community_service_text') if data.get('community_service_text') else None
 
+    updated_at = datetime.now()
+
     cursor.execute(APPLICANT_ID, (email,))
     applicant_id = cursor.fetchone()[0]
     try:
-        cursor.execute(NEW_APPLICATION_INSERT, (applicant_id, a_number, first_semester, estimated_graduation, active_next_year, live_in_house, first_major, second_major, first_minor, second_minor, cumulative_gpa, previous_gpa, semester_initiated, executive_positions_held, other_positions_held, fraternity_conferences_attended, fraternity_text, semesters_involvement, other_org_executive_positions_held, other_org_positions_held, other_org_text, total_community_service_hours, last_semester_community_service_hours, community_service_text))
+        cursor.execute(NEW_APPLICATION_INSERT, (applicant_id, updated_at, a_number, first_semester, estimated_graduation, active_next_year, live_in_house, first_major, second_major, first_minor, second_minor, cumulative_gpa, previous_gpa, semester_initiated, executive_positions_held, other_positions_held, fraternity_conferences_attended, fraternity_text, semesters_involvement, other_org_executive_positions_held, other_org_positions_held, other_org_text, total_community_service_hours, last_semester_community_service_hours, community_service_text))
         conn.commit()
     except Exception as e:
         conn.rollback()
