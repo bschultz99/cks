@@ -8,7 +8,6 @@ import math
 import requests
 import json
 from datetime import datetime
-from weasyprint import HTML
 
 app = Flask(__name__)
 
@@ -31,14 +30,6 @@ def check_password(input_password, stored_password):
         return True
     return False
 
-@app.route('/generate_pdf', methods=['POST'])
-def generate_pdf(html, filename):
-    html = render_template('application.html', applicant_first_name="Bryant", email="bschultz1@hawk.iit.edu")
-    pdf = HTML(string=html).write_pdf()
-    response = make_response(pdf)
-    response.headers['Content-Type'] = 'application/pdf'
-    response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
-    return response
 
 # Emails
 def send_email(recipient, text_body, subject):
