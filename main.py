@@ -30,7 +30,7 @@ def check_password(input_password, stored_password):
         return True
     return False
 
-@app.route('/send_pdf', methods=['POST'])
+@app.route('/send_pdf', methods=['GET'])
 def send_pdf():
     #cursor.execute("SELECT * FROM applications WHERE applicant_id = 1;")
     #data = cursor.fetchone()
