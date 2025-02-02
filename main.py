@@ -77,42 +77,42 @@ def send_forgot_password_email(email, password, first_name, last_name):
 
 
 # Application Score
-def accademic_score(cumulative_gpa, semesters):
-    TUNING_FACTOR = .3
+def accademic_score(cumulative_gpa):
     if cumulative_gpa < 3.0:
         gpa_score = 0
     else:
-        gpa_score = cumulative_gpa * (1 + TUNING_FACTOR * math.sqrt(semesters))
-    return gpa_score * 10
+        gpa_score = (cumulative_gpa - 3.0) * 10
+    return gpa_score
 
 def fraternity_score(executive_positions, other_positions, conferences):
-    EXECUTIVE_POINTS = 8
-    OTHER_POINTS = 4
-    CONFERENCE_POINTS = 2
-    return (executive_positions * EXECUTIVE_POINTS) + (other_positions * OTHER_POINTS) + (conferences * CONFERENCE_POINTS)
-
-def organization_score(executive_positions, other_positions):
     EXECUTIVE_POINTS = 4
     OTHER_POINTS = 2
-    return (executive_positions * EXECUTIVE_POINTS) + (other_positions * OTHER_POINTS)
+    CONFERENCE_POINTS = 1
+    return (executive_positions * EXECUTIVE_POINTS) + (other_positions * OTHER_POINTS) + (conferences * CONFERENCE_POINTS)
 
-def community_service_score(hours, semesters_active):
-    HOURS_POINTS = .2 # 50 Hours = 1 Exec position
-    return (hours - (16 * semesters_active)) * HOURS_POINTS
+def organization_score(executive_positions, other_positions, semesters_involved):
+    EXECUTIVE_POINTS = 2
+    OTHER_POINTS = 1
+    SEMESTERS_INVOLVED = .5
+    return (executive_positions * EXECUTIVE_POINTS) + (other_positions * OTHER_POINTS) + (semesters_involved * SEMESTERS_INVOLVED)
 
-def total_score(gpa_score, fraternity_score, organization_score, community_service_score):
-    if gpa_score < 3.0:
+def community_service_score(hours):
+    HOURS_POINTS = .05
+    return hours * HOURS_POINTS
+
+def total_score(academic_score, fraternity_score, organization_score, community_service_score):
+    if academic_score == 0:
         return 0
-    return gpa_score + fraternity_score + organization_score + community_service_score
+    return academic_score + fraternity_score + organization_score + community_service_score
 
 def generate_scores():
     cursor.execute("SELECT * FROM applications")
     applications = cursor.fetchall()
     for application in applications:
-        gpa_score = accademic_score(application[10], application[16])
-        fraternity_score = fraternity_score(application[13], application[14], application[15])
-        organization_score = organization_score(application[18], application[19])
-        community_service_score = community_service_score(application[22], application[21])
+        gpa_score = accademic_score(application[12])
+        fraternity_score = fraternity_score(application[15], application[16], application[17])
+        organization_score = organization_score(application[20], application[21], application[19])
+        community_service_score = community_service_score(application[23])
         score = total_score(gpa_score, fraternity_score, organization_score, community_service_score)
         cursor.execute("UPDATE applications SET score = %s WHERE application_id = %s", (score, application[0]))
     conn.commit()
