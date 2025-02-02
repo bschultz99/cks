@@ -151,4 +151,9 @@ total_community_service_hours = excluded.total_community_service_hours,
 last_semester_community_service_hours = excluded.last_semester_community_service_hours,
 community_service_text = excluded.community_service_text;
 '''
-# On start of applications, application_id, applicant_id
+
+
+# ***** SCORE QUERIES *****
+COUNT_OF_APPLICATIONS = '''
+SELECT COUNT(*) FROM applications;
+'''
