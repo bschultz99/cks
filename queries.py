@@ -36,7 +36,8 @@ CREATE TABLE IF NOT EXISTS applications (
     total_community_service_hours INTEGER,
     last_semester_community_service_hours INTEGER,
     community_service_text VARCHAR(10000),
-    score FLOAT
+    score FLOAT,
+    recommended_scholarship_amount INTEGER
     );
 CREATE TABLE IF NOT EXISTS reviewers (
     reviewer_id SERIAL PRIMARY KEY,
@@ -69,12 +70,19 @@ INSERT INTO applicants(first_name,
                        last_name,
                        email,
                        password)
-VALUES (%s, %s, %s, %s)
+VALUES (%s, %s, %s)
 ON CONFLICT (email)
 DO UPDATE SET first_name = excluded.first_name,
               last_name = excluded.last_name,
-              email = excluded.email,
-              password = excluded.password;
+              email = excluded.email;
+'''
+
+NEW_APPLICANT_PASSWORD_UPDATE = '''
+UPDATE applicants SET password = %s WHERE email = %s;
+'''
+
+NEW_APPLICANT_PASSWORD_SETUP = '''
+SELECT * FROM applicants;
 '''
 
 APPLICANT_ID = '''
@@ -83,6 +91,10 @@ SELECT applicant_id FROM applicants WHERE email = %s;
 
 APPLICANT_LOGIN = '''
 SELECT password FROM applicants WHERE email = %s;
+'''
+
+REMOVE_ALL_PASSWORDS = '''
+UPDATE applicants SET password = NULL;
 '''
 
 # ***** APPLICATION QUERIES *****

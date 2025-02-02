@@ -6,6 +6,7 @@ import string
 import bcrypt
 import math
 import requests
+import time
 import json
 from datetime import datetime
 
@@ -71,6 +72,16 @@ def send_forgot_password_email(email, password, first_name, last_name):
     Your email is: {email}\n\n
     Your new password is: {password}\n\n
     Please login at https://cks-production.up.railway.app to complete your application.\n\n
+    Thank you,\n
+    Carroll Simons Scholarship Committee"""
+    return send_email(email, text_body, subject)
+
+def send_closed_scholarship_email(email, first_name, last_name):
+    subject = "Carroll Simons Scholarship Application Closed"
+    text_body = f"""Hello {first_name} {last_name},\n\n
+    The Carroll Simons Scholarship Application has been closed.\n
+    Thank you for applying.\n\n
+    Please come to Smoker for the scholarship announcements.\n\n
     Thank you,\n
     Carroll Simons Scholarship Committee"""
     return send_email(email, text_body, subject)
@@ -151,7 +162,6 @@ def save_application_data(data):
     community_service_text = data.get('community_service_text') if data.get('community_service_text') else None
 
     updated_at = datetime.now()
-    print(first_semester, estimated_graduation)
     cursor.execute(APPLICANT_ID, (email,))
     applicant_id = cursor.fetchone()[0]
     try:
@@ -165,7 +175,6 @@ def save_application_data(data):
 @app.route('/load_application', methods=['GET'])
 def load_application():
     email = request.args.get('email')
-    print(f"Email received: {email}")  # Debugging: Log the email received
     cursor.execute("SELECT * FROM applications WHERE applicant_id = (SELECT applicant_id FROM applicants WHERE email = %s)", (email,))
     data = cursor.fetchone()
     
@@ -175,31 +184,50 @@ def load_application():
         for key, value in application_data.items():
             if isinstance(value, datetime):
                 application_data[key] = value.strftime('%Y-%m-%d')
-        print(f"Application data: {application_data}")  # Debugging: Log the application data
         return jsonify(application_data)
     else:
-        print("No data found")  # Debugging: Log that no data was found
         return jsonify({"status": "no_data"})
 
 
-# Button Logic
-@app.route('/newapplicant', methods=['GET'])
-def newApplicant():
-    """Create a new applicant in the database and send them an email to fill out initial information."""
-    first_name = "Bryant" #request.form['first_name']
-    last_name = "Schultz" #request.form['last_name']
-    email = "bschultz1@hawk.iit.edu" #request.form['email']d
-    cursor.execute(APPLICANT_CHECK, (email,))
-    if  cursor.fetchall():
-        print("Applicant already exists")
-        return redirect(url_for('error', message='Applicant already exists'))
-    password = generate_password()
-    hashed_password = hash_password(password)
-    send_new_applicant_email(email, password, first_name, last_name)
-    cursor.execute(NEW_APPLICANT_INSERT, (first_name, last_name, email, hashed_password))
+# Admin Routes
+@app.route('/add_applicants', methods=['POST'])
+def add_applicants():
+    """Add applicants to the database."""
+    # Load in Data via CSV our form, going to assume form untill front end is done for ADMIN
+    # Going to need this to be in a FOR LOOP
+    first_name = request.form['first_name']
+    last_name = request.form['last_name']
+    email = request.form['email']
+    cursor.execute(NEW_APPLICANT_INSERT, (first_name, last_name, email,))
     conn.commit()
     return Response(), 200
 
+@app.route('/begin_scholarship_process', methods=['POST'])
+def begin_scholarship_process():
+    """Creates a password for all applicants and sends them an email. Starts the application process."""
+    cursor.execute(NEW_APPLICANT_PASSWORD_SETUP)
+    applicants = cursor.fetchall()
+    for applicant in applicants:
+        password = generate_password()
+        hashed_password = hash_password(password)
+        cursor.execute(NEW_APPLICANT_PASSWORD_UPDATE, (hashed_password, applicant[3]))
+        send_new_applicant_email(applicant[3], password, applicant[1], applicant[2])
+        conn.commit()
+        time.sleep(5) # Sleep for 5 seconds to avoid rate limiting and being marked as spam-
+    return Response(), 200
+
+@app.route('/close_scholarship_process', methods=['POST'])
+def close_scholarship_process():
+    """Closes the scholarship process and calculates the scores for all applicants."""
+    generate_scores()
+    cursor.execute(REMOVE_ALL_PASSWORDS)
+    conn.commit()
+    #send_closed_scholarship_email() HAVE THIS FORMAT WITH THEIR HISTORICAL RESPONSES
+    return Response(), 200
+
+
+
+# Login Logic
 @app.route('/login', methods=['POST'])
 def login():
     """Login an applicant or reviewer."""
@@ -208,7 +236,6 @@ def login():
     cursor.execute(APPLICANT_LOGIN, (email,))
     stored_password = cursor.fetchone()
     if not stored_password:
-        print("oh no")
         return redirect(url_for('error', message='Applicant does not exist'))
     if check_password(password, stored_password[0]):
         cursor.execute(APPLICANT_NAME, (email,))
@@ -233,16 +260,6 @@ def forgotPassword():
     cursor.execute(NEW_APPLICANT_INSERT, (first_name, last_name, email, hashed_password))
     conn.commit()
     return redirect(url_for('index'))
-
-@app.route('/start_applications', methods=['GET'])
-def startApplications():
-    """Start the application process."""
-    return Response(), 200
-
-@app.route('/close_applications', methods=['GET'])
-def closeApplications():
-    """Close all applications."""
-    return Response(), 200
 
 # Main Pages
 
@@ -281,8 +298,8 @@ if __name__ == "__main__":
                                 password=os.getenv("POSTGRES_PASSWORD"),
                                 port=os.getenv("PGPORT"))
         cursor = conn.cursor()
-        #cursor.execute("DROP TABLE IF EXISTS applications CASCADE;")
-        #conn.commit()
+        cursor.execute("DROP TABLE IF EXISTS applications CASCADE;")
+        conn.commit()
         cursor.execute(CREATE_TABLES)
         conn.commit()
         code_executed = True
