@@ -131,7 +131,6 @@ def generate_scores():
 def generate_scholarship_amounts():
     SCHOLARHIP_AMOUNT = 30000
     SMALLEST_SCHOLARSHIP = 1000
-    TOWNSMAN_SCHOLARSHIP_MAX = 4000 - SMALLEST_SCHOLARSHIP
     cursor.execute(COUNT_OF_APPLICATIONS)
     count = cursor.fetchone()[0]
     budget = SCHOLARHIP_AMOUNT - (SMALLEST_SCHOLARSHIP * count)
@@ -150,31 +149,18 @@ def generate_scholarship_amounts():
             additional_scholarship = round(additional_scholarship/1000)*1000
         else:
             additional_scholarship = 0
-        if application[2] == "No" and additional_scholarship > TOWNSMAN_SCHOLARSHIP_MAX: # Cap scholarships for those not living in the house
-            additional_scholarship = TOWNSMAN_SCHOLARSHIP_MAX
-            temp_scholarships.append((application[0], False, SMALLEST_SCHOLARSHIP + additional_scholarship))
+        if application[2] == "No":
+            temp_scholarships.append((application[0], (SMALLEST_SCHOLARSHIP + additional_scholarship)/2)) # Half the scholarship for out of house
         else:
-            temp_scholarships.append((application[0], True, SMALLEST_SCHOLARSHIP + additional_scholarship))
+            temp_scholarships.append((application[0], SMALLEST_SCHOLARSHIP + additional_scholarship))
 
-    temp_scholarships = sum(scholarship[1] for scholarship in temp_scholarships)
+    scholarship_sum = sum(scholarship[1] for scholarship in temp_scholarships)
 
-    if temp_scholarships > SCHOLARHIP_AMOUNT:
-        return "Not enough budget"
-    remaining_budget = SCHOLARHIP_AMOUNT - temp_scholarships
-    while remaining_budget >= 1000:
-        for i in range(len(temp_scholarships)):
-            if remaining_budget < 1000:
-                break
-            application_id, in_house, scholarship = temp_scholarships[i]
-            if scholarship < TOWNSMAN_SCHOLARSHIP_MAX or in_house:
-                temp_scholarships[i] = (application_id, in_house, scholarship + 1000)
-                remaining_budget -= 1000
-    
     for scholarship in temp_scholarships:
         cursor.execute("UPDATE applications SET recommended_scholarship_amount = %s WHERE application_id = %s", (scholarship[2], scholarship[0]))
         conn.commit()
 
-    return "Success"
+    return scholarship_sum
             
 
 
