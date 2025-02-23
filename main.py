@@ -37,9 +37,10 @@ def send_pdf():
     #cursor.execute("SELECT * FROM applications WHERE applicant_id = 1;")
     #data = cursor.fetchone()
     email_body = render_template('pdf_application.html', applicant_first_name='Bryant', email='bschultz1@hawk.iit.edu')
-    with  open("output.pdf", "w+b") as pdf_file:
-        pisa.CreatePDF(email_body, dest=pdf_file)
-    send_email('bryantschultz99@gmail.com', email_body, 'CKS Email Test', 'output.pdf')
+    print(email_body)
+    #with  open("output.pdf", "w+b") as pdf_file:
+    #    pisa.CreatePDF(email_body, dest=pdf_file)
+    #send_email('bryantschultz99@gmail.com', email_body, 'CKS PDF Test', 'output.pdf')
     return render_template('pdf_application.html', applicant_first_name='Bryant', email='bschultz1@hawk.iit.edu')
 
 
