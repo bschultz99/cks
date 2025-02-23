@@ -32,7 +32,7 @@ def check_password(input_password, stored_password):
         return True
     return False
 
-@app.route('/send_pdf', methods=['GET'])
+@app.route('/send_pdf', methods=['GET']) #TODO: Create a custom HTML Fomat for the PDF.
 def send_pdf():
     #cursor.execute("SELECT * FROM applications WHERE applicant_id = 1;")
     #data = cursor.fetchone()
@@ -157,10 +157,7 @@ def generate_scholarship_amounts():
             additional_scholarship = round(additional_scholarship/1000)*1000
         else:
             additional_scholarship = 0
-        if application[2] == "No":
-            temp_scholarships.append((application[0], (SMALLEST_SCHOLARSHIP + additional_scholarship)/2)) # Half the scholarship for out of house
-        else:
-            temp_scholarships.append((application[0], SMALLEST_SCHOLARSHIP + additional_scholarship))
+        temp_scholarships.append((application[0], SMALLEST_SCHOLARSHIP + additional_scholarship))
 
     scholarship_sum = sum(scholarship[1] for scholarship in temp_scholarships)
 
