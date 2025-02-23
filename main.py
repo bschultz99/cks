@@ -52,10 +52,13 @@ def send_pdf():
     # Convert the rendered HTML to a PDF
     pdf_path = "output.pdf"
     with open(pdf_path, "w+b") as pdf_file:
-        pisa.CreatePDF(email_body, dest=pdf_file)
+        try:
+            pisa.CreatePDF(email_body, dest=pdf_file)
+        except Exception as e:
+            ignore = e
     
     # Send the email with the PDF attachment
-    send_email('bryantschultz99@gmail.com', email_body, 'CKS PDF Test', pdf_path)
+    send_email('bryantschultz99@gmail.com', "Here is a copy of the application", 'CKS PDF Test', pdf_path)
     
     return render_template('pdf_application.html', **application_data)
 
