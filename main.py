@@ -219,7 +219,7 @@ def load_application():
     email = request.args.get('email')
     cursor.execute("SELECT * FROM applications WHERE applicant_id = (SELECT applicant_id FROM applicants WHERE email = %s)", (email,))
     data = cursor.fetchone()
-    
+    print(data)
     if data:
         columns = [desc[0] for desc in cursor.description]
         application_data = dict(zip(columns, data))
