@@ -34,14 +34,30 @@ def check_password(input_password, stored_password):
 
 @app.route('/send_pdf', methods=['GET']) #TODO: Create a custom HTML Fomat for the PDF.
 def send_pdf():
-    #cursor.execute("SELECT * FROM applications WHERE applicant_id = 1;")
-    #data = cursor.fetchone()
-    email_body = render_template('pdf_application.html', applicant_first_name='Bryant', email='bschultz1@hawk.iit.edu')
-    print(email_body)
-    #with  open("output.pdf", "w+b") as pdf_file:
-    #    pisa.CreatePDF(email_body, dest=pdf_file)
-    #send_email('bryantschultz99@gmail.com', email_body, 'CKS PDF Test', 'output.pdf')
-    return render_template('pdf_application.html', applicant_first_name='Bryant', email='bschultz1@hawk.iit.edu')
+    email = 'bschultz1@hawk.iit.edu'
+    cursor.execute("SELECT * FROM applications WHERE applicant_id = (SELECT applicant_id FROM applicants WHERE email = %s)", (email,))
+    data = cursor.fetchone()
+    if not data:
+        return jsonify({"status": "no_data"})
+    
+    columns = [desc[0] for desc in cursor.description]
+    application_data = dict(zip(columns, data))
+    for key, value in application_data.items():
+        if isinstance(value, datetime):
+            application_data[key] = value.strftime('%Y-%m-%d')
+    
+    # Render the HTML with the application data
+    email_body = render_template('pdf_application.html', **application_data)
+    
+    # Convert the rendered HTML to a PDF
+    pdf_path = "output.pdf"
+    with open(pdf_path, "w+b") as pdf_file:
+        pisa.CreatePDF(email_body, dest=pdf_file)
+    
+    # Send the email with the PDF attachment
+    send_email('bryantschultz99@gmail.com', email_body, 'CKS PDF Test', pdf_path)
+    
+    return render_template('pdf_application.html', **application_data)
 
 
 # Emails
