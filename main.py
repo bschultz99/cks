@@ -47,7 +47,7 @@ def send_pdf():
             application_data[key] = value.strftime('%Y-%m-%d')
     
     cursor.execute("SELECT first_name FROM applicants WHERE email = %s", (email,))
-    application_data['applicant_first_name'] = cursor.fetchone()
+    application_data['applicant_first_name'] = cursor.fetchone()[0]
     # Render the HTML with the application data
     email_body = render_template('pdf_application.html', **application_data)
     
