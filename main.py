@@ -39,7 +39,7 @@ def send_pdf():
     email_body = render_template('pdf_application.html', applicant_first_name='Bryant', email='bschultz1@hawk.iit.edu')
     with  open("output.pdf", "w+b") as pdf_file:
         pisa.CreatePDF(email_body, dest=pdf_file)
-    #send_email('bryantschultz99@gmail.com', email_body, 'CKS Email Test', 'output.pdf')
+    send_email('bryantschultz99@gmail.com', email_body, 'CKS Email Test', 'output.pdf')
     return render_template('pdf_application.html', applicant_first_name='Bryant', email='bschultz1@hawk.iit.edu')
 
 
@@ -219,7 +219,6 @@ def load_application():
     email = request.args.get('email')
     cursor.execute("SELECT * FROM applications WHERE applicant_id = (SELECT applicant_id FROM applicants WHERE email = %s)", (email,))
     data = cursor.fetchone()
-    print(email)
     if data:
         columns = [desc[0] for desc in cursor.description]
         application_data = dict(zip(columns, data))
