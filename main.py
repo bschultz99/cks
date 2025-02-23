@@ -9,6 +9,7 @@ import requests
 import time
 import json
 from datetime import datetime
+from xhtml2pdf import pisa
 
 app = Flask(__name__)
 
@@ -36,22 +37,29 @@ def send_pdf():
     #cursor.execute("SELECT * FROM applications WHERE applicant_id = 1;")
     #data = cursor.fetchone()
     email_body = render_template('application.html', applicant_first_name='Bryant', email='bschultz1@hawk.iit.edu')
-    return send_email('bryantschultz99@gmail.com', email_body, 'CKS Email Test')
+    with  open("output.pdf", "w+b") as pdf_file:
+        pisa.CreatePDF(email_body, dest=pdf_file)
+    return send_email('bryantschultz99@gmail.com', email_body, 'CKS Email Test', 'output.pdf')
 
 
 # Emails
-def send_email(recipient, text_body, subject):
+def send_email(recipient, text_body, subject, pdf_path=None):
     api_key = os.getenv("MAILGUN")
     domain = os.getenv("MAILGUN_DOMAIN")
     sender = "cks@{}".format(domain)
     url = f'https://api.mailgun.net/v3/{domain}/messages'
+    files={}
+    if pdf_path:
+        files = {'attachment': (os.path.basename(pdf_path), open(pdf_path, 'rb'))}
     response = requests.post(
         url,
         auth=('api', api_key),
         data={'from': sender,
               'to': recipient,
               'subject': subject,
-              'text': text_body})
+              'text': text_body},
+        files=files)
+    
     print(response)
     return response.status_code
 
