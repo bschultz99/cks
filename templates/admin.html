@@ -25,7 +25,7 @@
                     <h2 style="color: var(--bs-secondary);font-weight: bold;font-size: 44px;text-shadow: 7px 9px 10px var(--bs-secondary);">CKS Adminstrative Portal</h2>
                 </div>
                 <form class="border rounded border-1 shadow-lg p-3 p-md-5" data-bs-theme="light" style="background: #ffffff;">
-                    <input class="form-control" type="file">
+                    <input class="form-control" type="file", id="fileInput" accept=".csv">
                     <div id="add-members" class="mb-3"></div><button class="btn btn-primary btn-lg d-block w-100" type="button" id="add-members">Add Members</button></div>
                     <div id="start-scholarship" class="mb-3"></div><button class="btn btn-primary btn-lg d-block w-100" type="button" id="start-scholarship">Start Scholarship</button></div>
                     <div id="end-scholarship" class="mb-3"></div><button class="btn btn-primary btn-lg d-block w-100" type="button" id="end-scholarship">End Scholarship</button></div>
@@ -40,24 +40,29 @@
     <script src="static/js/theme.js"></script>
     <script>
         document.getElementById('add-members').addEventListener('click', function () {
+                var fileInput = document.getElementById('file-input');
+                var file = fileInput.files[0];
+                if (!file) {
+                    alert('Please select a file to upload.');
+                    return;
+                }
+                var formData = new FormData();
+                formData.append('file', file);
                 fetch('/add_applicants', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(data)
+                    body: formData
                 })
                 .then(response => response.json())
                 .then(result => {
                     if (result.status === 'success') {
-                        alert('Application saved successfully!');
+                        alert('Members added successfully!');
                     } else {
-                        alert('Failed to save application.');
+                        alert('Failed to add members.');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert('An error occurred while saving the application.');
+                    alert('An error occurred while adding members.');
                 });
             });
     </script>

@@ -8,6 +8,7 @@ import math
 import requests
 import time
 import json
+import csv
 from datetime import datetime
 from xhtml2pdf import pisa
 
@@ -263,14 +264,23 @@ def load_application():
 @app.route('/add_applicants', methods=['POST'])
 def add_applicants():
     """Add applicants to the database."""
-    # Load in Data via CSV our form, going to assume form untill front end is done for ADMIN
-    # Going to need this to be in a FOR LOOP
-    first_name = request.form['first_name']
-    last_name = request.form['last_name']
-    email = request.form['email']
-    cursor.execute(NEW_APPLICANT_INSERT, (first_name, last_name, email,))
-    conn.commit()
-    return Response(), 200
+    if 'file' not in request.files:
+        return jsonify({"status": "error", "message": "No file part"}), 400
+
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"status": "error", "message": "No selected file"}), 400
+
+    stream = file.stream.read().decode("utf-8").splitlines()  
+    reader = csv.reader(stream)
+
+    for row in reader:
+        first_name, last_name, email = row
+        cursor.execute(NEW_APPLICANT_INSERT, (first_name, last_name, email))
+        conn.commit()
+        return jsonify({"status": "success", "message": "Applicants added successfully"}), 200
+    else:
+        return jsonify({"status": "error", "message": "Invalid file format"}), 400
 
 @app.route('/begin_scholarship_process', methods=['POST'])
 def begin_scholarship_process():
