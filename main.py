@@ -297,6 +297,7 @@ def close_scholarship_process():
     """Closes the scholarship process and calculates the scores for all applicants."""
     print("Generating Scores")
     generate_scores()
+    generate_scholarship_amounts()
     print("Removing Passwords")
     cursor.execute(REMOVE_ALL_PASSWORDS)
     conn.commit()
