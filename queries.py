@@ -57,6 +57,11 @@ CREATE TABLE IF NOT EXISTS reviews (
     reviewer_id INTEGER REFERENCES reviewers (reviewer_id),
     reviewer_amount INTEGER
     );
+CREATE TABLE IF NOT EXISTS key_values (
+    scholarship_total INTEGER,
+    start_date DATE,
+    end_date DATE
+    );
 """
 
 # ***** APPLICANTS QUERIES *****
