@@ -76,12 +76,31 @@
                     if (result.status === 'success') {
                         alert('Scholarship Season has begun!');
                     } else {
-                        alert('Scholarship Season has faile to start.');
+                        alert('Scholarship Season has failed to start.');
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     alert('An error occurred while starting the scholarship season.');
+                });
+            });
+    </script>
+    <script>
+        document.getElementById('end-scholarship').addEventListener('click', function () {
+                fetch('/close_scholarship_process', {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.status === 'success') {
+                        alert('Scholarship Season has Ended!');
+                    } else {
+                        alert('Scholarship Season has failed to end.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while ending the scholarship season.');
                 });
             });
     </script>

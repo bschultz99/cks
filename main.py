@@ -33,13 +33,10 @@ def check_password(input_password, stored_password):
         return True
     return False
 
-@app.route('/send_pdf', methods=['GET']) #TODO: Create a custom HTML Fomat for the PDF.
-def send_pdf():
-    email = 'bschultz1@hawk.iit.edu'
+def send_pdf(recipient, text_body, subject):
+    email = recipient
     cursor.execute("SELECT * FROM applications WHERE applicant_id = (SELECT applicant_id FROM applicants WHERE email = %s)", (email,))
     data = cursor.fetchone()
-    if not data:
-        return jsonify({"status": "no_data"})
     
     columns = [desc[0] for desc in cursor.description]
     application_data = dict(zip(columns, data))
@@ -49,7 +46,6 @@ def send_pdf():
     
     cursor.execute("SELECT first_name FROM applicants WHERE email = %s", (email,))
     application_data['applicant_first_name'] = cursor.fetchone()[0]
-    # Render the HTML with the application data
     email_body = render_template('pdf_application.html', **application_data)
     
     # Convert the rendered HTML to a PDF
@@ -61,9 +57,8 @@ def send_pdf():
             ignore = e
     
     # Send the email with the PDF attachment
-    send_email('bryantschultz99@gmail.com', "Here is a copy of the application", 'CKS PDF Test', pdf_path)
-    
-    return render_template('pdf_application.html', **application_data)
+    return send_email(email, "Here is a copy of the application", 'CKS PDF Test', pdf_path)
+
 
 
 # Emails
@@ -115,9 +110,10 @@ def send_closed_scholarship_email(email, first_name, last_name):
     The Carroll Simons Scholarship Application has been closed.\n
     Thank you for applying.\n\n
     Please come to Smoker for the scholarship announcements.\n\n
+    We have attached a copy of your application for your records.\n\n
     Thank you,\n
     Carroll Simons Scholarship Committee"""
-    return send_email(email, text_body, subject)
+    return send_pdf(email, text_body, subject)
 
 
 # Application Score
@@ -301,8 +297,13 @@ def close_scholarship_process():
     generate_scores()
     cursor.execute(REMOVE_ALL_PASSWORDS)
     conn.commit()
-    #send_closed_scholarship_email() HAVE THIS FORMAT WITH THEIR HISTORICAL RESPONSES
-    return Response(), 200
+    cursor.execute(NEW_APPLICANT_PASSWORD_SETUP)
+    applicants = cursor.fetchall()
+    for applicant in applicants:
+        send_closed_scholarship_email(applicant[3], applicant[1], applicant[2])
+        print(f"Email sent to {applicant[3]}")
+        time.sleep(5)
+    return jsonify({"status": "success", "message": "Scholarship Season has started!"}), 200
 
 
 
