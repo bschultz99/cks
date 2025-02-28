@@ -276,7 +276,7 @@ def add_applicants():
 
     for row in reader:
         first_name, last_name, email = row
-        cursor.execute(NEW_APPLICANTS_ADD, (first_name, last_name, email))
+        cursor.execute(NEW_APPLICANTS_ADD, (first_name.strip(), last_name.strip(), email.strip()))
         conn.commit()
     return jsonify({"status": "success", "message": "Applicants added successfully"}), 200
 
@@ -313,7 +313,6 @@ def login():
     email = request.form['email'].strip()
     password = request.form['password'].strip()
     cursor.execute(APPLICANT_LOGIN, (email,))
-    print(APPLICANT_LOGIN, (email,))
     stored_password = cursor.fetchone()
     print(f"Email: {email}")
     print(f"Stored Password: {stored_password}")
