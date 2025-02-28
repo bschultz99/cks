@@ -294,10 +294,13 @@ def begin_scholarship_process():
 @app.route('/close_scholarship_process', methods=['POST'])
 def close_scholarship_process():
     """Closes the scholarship process and calculates the scores for all applicants."""
+    print("Generating Scores")
     generate_scores()
+    print("Removing Passwords")
     cursor.execute(REMOVE_ALL_PASSWORDS)
     conn.commit()
     cursor.execute(NEW_APPLICANT_PASSWORD_SETUP)
+    print("Emailing Applicants")
     applicants = cursor.fetchall()
     for applicant in applicants:
         send_closed_scholarship_email(applicant[3], applicant[1], applicant[2])
