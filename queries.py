@@ -128,7 +128,7 @@ other_org_text,
 total_community_service_hours,
 last_semester_community_service_hours,
 community_service_text)
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 ON CONFLICT (applicant_id) DO UPDATE SET
 updated_at = excluded.updated_at,
 a_number = excluded.a_number,
@@ -153,7 +153,11 @@ other_org_positions_held = excluded.other_org_positions_held,
 other_org_text = excluded.other_org_text,
 total_community_service_hours = excluded.total_community_service_hours,
 last_semester_community_service_hours = excluded.last_semester_community_service_hours,
-community_service_text = excluded.community_service_text;
+community_service_text = excluded.community_service_text
+essay_question_1 = excluded.essay_question_1,
+essay_question_2 = excluded.essay_question_2,
+essay_question_3 = excluded.essay_question_3,
+essay_question_4 = excluded.essay_question_4;
 '''
 
 
