@@ -36,6 +36,10 @@ CREATE TABLE IF NOT EXISTS applications (
     total_community_service_hours INTEGER,
     last_semester_community_service_hours INTEGER,
     community_service_text VARCHAR(10000),
+    essay_question_1 VARCHAR(10000),
+    essay_question_2 VARCHAR(10000),
+    essay_question_3 VARCHAR(10000),
+    essay_question_4 VARCHAR(10000),
     score FLOAT,
     recommended_scholarship_amount INTEGER
     );

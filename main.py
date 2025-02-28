@@ -91,7 +91,8 @@ def send_new_applicant_email(email, password, first_name, last_name):
     text_body = f"""Hello {first_name} {last_name},\n\n
     An account has been created for you to apply for the Carroll Simons Scholarship.\n
     Your email is: {email} and your password is: {password}\n\n
-    Please login at https://cks-production.up.railway.app to complete your application.\n\n
+    Please login at https://cks.aepkshc.org/ to complete your application.\n\n
+    We recommend maintianing a copy of your application for your records as this is the first use of the new scholarship system.\n\n
     Thank you,\n
     Carroll Simons Scholarship Committee"""
     return send_email(email, text_body, subject)
@@ -102,7 +103,7 @@ def send_forgot_password_email(email, password, first_name, last_name):
     Your password has been reset for the Carroll Simons Scholarship Application.\n
     Your email is: {email}\n\n
     Your new password is: {password}\n\n
-    Please login at https://cks-production.up.railway.app to complete your application.\n\n
+    Please login at https://cks.aepkshc.org/ to complete your application.\n\n
     Thank you,\n
     Carroll Simons Scholarship Committee"""
     return send_email(email, text_body, subject)
@@ -224,12 +225,17 @@ def save_application_data(data):
     total_community_service_hours = data.get('total_community_service_hours') if data.get('total_community_service_hours') else None
     last_semester_community_service_hours = data.get('last_semester_community_service_hours') if data.get('last_semester_community_service_hours') else None
     community_service_text = data.get('community_service_text') if data.get('community_service_text') else None
+    # Essay Questions
+    essay_question_1 = data.get('essay_question_1') if data.get('essay_question_1') else None
+    essay_question_2 = data.get('essay_question_2') if data.get('essay_question_2') else None
+    essay_question_3 = data.get('essay_question_3') if data.get('essay_question_3') else None
+    essay_question_4 = data.get('essay_question_4') if data.get('essay_question_4') else None
 
     updated_at = datetime.now()
     cursor.execute(APPLICANT_ID, (email,))
     applicant_id = cursor.fetchone()[0]
     try:
-        cursor.execute(NEW_APPLICATION_INSERT, (applicant_id, updated_at, a_number, first_semester, estimated_graduation, active_next_year, live_in_house, first_major, second_major, first_minor, second_minor, cumulative_gpa, previous_gpa, semester_initiated, executive_positions_held, other_positions_held, fraternity_conferences_attended, fraternity_text, semesters_involvement, other_org_executive_positions_held, other_org_positions_held, other_org_text, total_community_service_hours, last_semester_community_service_hours, community_service_text))
+        cursor.execute(NEW_APPLICATION_INSERT, (applicant_id, updated_at, a_number, first_semester, estimated_graduation, active_next_year, live_in_house, first_major, second_major, first_minor, second_minor, cumulative_gpa, previous_gpa, semester_initiated, executive_positions_held, other_positions_held, fraternity_conferences_attended, fraternity_text, semesters_involvement, other_org_executive_positions_held, other_org_positions_held, other_org_text, total_community_service_hours, last_semester_community_service_hours, community_service_text, essay_question_1, essay_question_2, essay_question_3, essay_question_4))
         conn.commit()
     except Exception as e:
         conn.rollback()
@@ -361,6 +367,8 @@ if __name__ == "__main__":
                                 password=os.getenv("POSTGRES_PASSWORD"),
                                 port=os.getenv("PGPORT"))
         cursor = conn.cursor()
+        cursor.execute("DROP TABLE IF IT EXISTS applications CASCADE;")
+        conn.commit()
         cursor.execute(CREATE_TABLES)
         conn.commit()
         code_executed = True
