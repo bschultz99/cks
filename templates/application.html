@@ -131,7 +131,26 @@
         });
     </script>
     <script>
+        function validateForm() {
+        var form = document.getElementById('application-form');
+        var isValid = true;
+        var requiredFields = form.querySelectorAll('[required]');
+
+        requiredFields.forEach(function(field) {
+            if (!field.value) {
+                isValid = false;
+                field.classList.add('is-invalid');
+            } else {
+                field.classList.remove('is-invalid');
+            }
+        });
+        return isValid;
+        }
         document.getElementById('save-button').addEventListener('click', function () {
+            if (!validateForm()) {
+                alert('Please fill in all required fields.');
+                return;
+            }
                 var form = document.getElementById('application-form');
                 var formData = new FormData(form);
                 var data = {};
