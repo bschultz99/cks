@@ -74,6 +74,17 @@ APPLICANT_NAME = '''
 SELECT first_name, last_name FROM applicants WHERE email = %s;
 '''
 
+NEW_APPLICANTS_ADD = '''
+INSERT INTO applicants(first_name,
+                       last_name,
+                       email)
+VALUES (%s, %s, %s)
+ON CONFLICT (email)
+DO UPDATE SET first_name = excluded.first_name,
+              last_name = excluded.last_name,
+              email = excluded.email;
+'''
+
 NEW_APPLICANT_INSERT = '''
 INSERT INTO applicants(first_name,
                        last_name,

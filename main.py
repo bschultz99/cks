@@ -276,7 +276,7 @@ def add_applicants():
 
     for row in reader:
         first_name, last_name, email = row
-        cursor.execute(NEW_APPLICANT_INSERT, (first_name, last_name, email))
+        cursor.execute(NEW_APPLICANTS_ADD, (first_name, last_name, email))
         conn.commit()
         return jsonify({"status": "success", "message": "Applicants added successfully"}), 200
     else:
