@@ -128,7 +128,7 @@ other_org_text,
 total_community_service_hours,
 last_semester_community_service_hours,
 community_service_text)
-VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 ON CONFLICT (applicant_id) DO UPDATE SET
 updated_at = excluded.updated_at,
 a_number = excluded.a_number,
