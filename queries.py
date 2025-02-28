@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS reviews (
 CREATE TABLE IF NOT EXISTS key_values (
     scholarship_total INTEGER,
     start_date VARCHAR(255),
-    end_date VARCHAR(255),
+    end_date VARCHAR(255)
     );
 """
 
