@@ -310,9 +310,10 @@ def close_scholarship_process():
 @app.route('/login', methods=['POST'])
 def login():
     """Login an applicant or reviewer."""
-    email = request.form['email']
-    password = request.form['password']
+    email = request.form['email'].strip()
+    password = request.form['password'].strip()
     cursor.execute(APPLICANT_LOGIN, (email,))
+    print(APPLICANT_LOGIN, (email,))
     stored_password = cursor.fetchone()
     print(f"Email: {email}")
     print(f"Stored Password: {stored_password}")
