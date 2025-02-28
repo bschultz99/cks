@@ -292,7 +292,7 @@ def begin_scholarship_process():
         send_new_applicant_email(applicant[3], password, applicant[1], applicant[2])
         conn.commit()
         time.sleep(5) # Sleep for 5 seconds to avoid rate limiting and being marked as spam-
-    return Response(), 200
+    return jsonify({"status": "success", "message": "Scholarship Season has started!"}), 200
 
 @app.route('/close_scholarship_process', methods=['POST'])
 def close_scholarship_process():
