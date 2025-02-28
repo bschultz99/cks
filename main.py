@@ -150,10 +150,10 @@ def generate_scores():
     applications = cursor.fetchall()
     for application in applications:
         gpa_score = accademic_score(application[12])
-        fraternity_score = fraternity_score(application[15], application[16], application[17])
-        organization_score = organization_score(application[20], application[21], application[19])
-        community_service_score = community_service_score(application[23])
-        score = total_score(gpa_score, fraternity_score, organization_score, community_service_score)
+        frat_score = fraternity_score(application[15], application[16], application[17])
+        org_score = organization_score(application[20], application[21], application[19])
+        comm_score = community_service_score(application[23])
+        score = total_score(gpa_score, frat_score, org_score, comm_score)
         cursor.execute("UPDATE applications SET score = %s WHERE application_id = %s", (score, application[0]))
     conn.commit()
 
