@@ -291,7 +291,7 @@ def begin_scholarship_process():
         cursor.execute(NEW_APPLICANT_PASSWORD_UPDATE, (hashed_password, applicant[3]))
         send_new_applicant_email(applicant[3], password, applicant[1], applicant[2])
         conn.commit()
-        print(f"Email sent to {applicant[3]}")
+        print(f"Email sent to {applicant[3]}, password: {password}")
         time.sleep(5) # Sleep for 5 seconds to avoid rate limiting and being marked as spam-
     return jsonify({"status": "success", "message": "Scholarship Season has started!"}), 200
 
@@ -314,6 +314,7 @@ def login():
     password = request.form['password']
     cursor.execute(APPLICANT_LOGIN, (email,))
     stored_password = cursor.fetchone()
+    print(f"Stored Password: {stored_password}")
     if not stored_password:
         return redirect(url_for('error', message='Applicant does not exist'))
     if check_password(password, stored_password[0]):
