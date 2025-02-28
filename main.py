@@ -278,9 +278,7 @@ def add_applicants():
         first_name, last_name, email = row
         cursor.execute(NEW_APPLICANTS_ADD, (first_name, last_name, email))
         conn.commit()
-        return jsonify({"status": "success", "message": "Applicants added successfully"}), 200
-    else:
-        return jsonify({"status": "error", "message": "Invalid file format"}), 400
+    return jsonify({"status": "success", "message": "Applicants added successfully"}), 200
 
 @app.route('/begin_scholarship_process', methods=['POST'])
 def begin_scholarship_process():
