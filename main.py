@@ -239,6 +239,7 @@ def save_application_data(data):
         conn.commit()
     except Exception as e:
         conn.rollback()
+        print("Error: ", e)
         return {"status": "error", "message": str(e)}
     return {"status": "success"}
 
