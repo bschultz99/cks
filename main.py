@@ -314,6 +314,7 @@ def login():
     password = request.form['password']
     cursor.execute(APPLICANT_LOGIN, (email,))
     stored_password = cursor.fetchone()
+    print(f"Email: {email}")
     print(f"Stored Password: {stored_password}")
     if not stored_password:
         return redirect(url_for('error', message='Applicant does not exist'))
