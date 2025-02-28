@@ -185,7 +185,7 @@ def generate_scholarship_amounts():
 
     for scholarship in temp_scholarships:
         print(scholarship)
-        cursor.execute("UPDATE applications SET recommended_scholarship_amount = %s WHERE application_id = %s", (scholarship[2], scholarship[0]))
+        cursor.execute("UPDATE applications SET recommended_scholarship_amount = %s WHERE application_id = %s", (scholarship[1], scholarship[0]))
         conn.commit()
 
     return scholarship_sum
