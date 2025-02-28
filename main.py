@@ -369,9 +369,9 @@ if __name__ == "__main__":
                                 port=os.getenv("PGPORT"))
         cursor = conn.cursor()
         cursor.execute("DROP TABLE IF EXISTS key_values;")
-        cursor.execute("Insert into key_values (scholarship_total, start_date, end_date) values (46000, '2025-03-01', '2025-04-01');")
         conn.commit()
         cursor.execute(CREATE_TABLES)
+        cursor.execute("Insert into key_values (scholarship_total, start_date, end_date) values (46000, '2025-03-01', '2025-04-01');")
         conn.commit()
         code_executed = True
     app.run(debug=False, host='0.0.0.0', port=8080)
