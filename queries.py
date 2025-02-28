@@ -127,7 +127,11 @@ other_org_positions_held,
 other_org_text,
 total_community_service_hours,
 last_semester_community_service_hours,
-community_service_text)
+community_service_text,
+essay_question_1,
+essay_question_2,
+essay_question_3,
+essay_question_4)
 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
 ON CONFLICT (applicant_id) DO UPDATE SET
 updated_at = excluded.updated_at,
