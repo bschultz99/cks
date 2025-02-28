@@ -45,11 +45,12 @@ def send_pdf(recipient, text_body, subject):
             application_data[key] = value.strftime('%Y-%m-%d')
     
     cursor.execute("SELECT first_name FROM applicants WHERE email = %s", (email,))
-    application_data['applicant_first_name'] = cursor.fetchone()[0]
+    name = cursor.fetchone()[0]
+    application_data['applicant_first_name'] = name
     email_body = render_template('pdf_application.html', **application_data)
     
     # Convert the rendered HTML to a PDF
-    pdf_path = "output.pdf"
+    pdf_path = f"{name}.pdf"
     with open(pdf_path, "w+b") as pdf_file:
         try:
             pisa.CreatePDF(email_body, dest=pdf_file)
@@ -57,7 +58,7 @@ def send_pdf(recipient, text_body, subject):
             ignore = e
     
     # Send the email with the PDF attachment
-    return send_email(email, "Here is a copy of the application", 'CKS PDF Test', pdf_path)
+    return send_email(email, text_body, subject, pdf_path)
 
 
 
