@@ -158,7 +158,7 @@ def generate_scores():
     conn.commit()
 
 def generate_scholarship_amounts():
-    SCHOLARHIP_AMOUNT = 30000
+    SCHOLARHIP_AMOUNT = 46000
     SMALLEST_SCHOLARSHIP = 1000
     cursor.execute(COUNT_OF_APPLICATIONS)
     count = cursor.fetchone()[0]
