@@ -390,8 +390,8 @@ if __name__ == "__main__":
                                 password=os.getenv("POSTGRES_PASSWORD"),
                                 port=os.getenv("PGPORT"))
         cursor = conn.cursor()
-        cursor.execute("UPDATE key_values SET start_date = '2025-03-06', end_date = '2025-04-06';")
-        conn.commit()
+        #cursor.execute("UPDATE key_values SET start_date = '2025-03-06', end_date = '2025-04-06';")
+        #conn.commit()
         cursor.execute(CREATE_TABLES)
         conn.commit()
         code_executed = True
