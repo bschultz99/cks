@@ -390,7 +390,7 @@ if __name__ == "__main__":
                                 password=os.getenv("POSTGRES_PASSWORD"),
                                 port=os.getenv("PGPORT"))
         cursor = conn.cursor()
-        cursor.execute("DROP TABLE IF EXISTS applicants CASCADE;")
+        cursor.execute("DROP TABLE IF EXISTS applications CASCADE;")
         conn.commit()
         cursor.execute(CREATE_TABLES)
         conn.commit()
