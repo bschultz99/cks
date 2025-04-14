@@ -381,8 +381,14 @@ def application_view():
             columns = [desc[0] for desc in cursor.description]
             selected_application = dict(zip(columns, data))
 
+    # Calculate the total remaining scholarship budget
+    cursor.execute("SELECT SUM(recommended_scholarship_amount) FROM applications WHERE recommended_scholarship_amount IS NOT NULL")
+    total_allocated = cursor.fetchone()[0] or 0  # Default to 0 if no scholarships are allocated
+    total_budget = 46000  # Example total budget, replace with your actual budget
+    remaining_budget = total_budget - total_allocated
+
     # Render the template with the application list and selected application
-    return render_template('application_view.html', applications=application_list, selected_application=selected_application)
+    return render_template('application_view.html', applications=application_list, selected_application=selected_application, remaining_budget=remaining_budget)
 
 
 @app.route('/application')
