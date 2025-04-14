@@ -362,7 +362,7 @@ def forgotPassword():
 def application_view():
     """Render the application view page with a dropdown to select applications."""
     # Fetch all applications with their email, first name, and last name
-    cursor.execute("SELECT a.email, a.first_name, a.last_name FROM applicants a JOIN applications app ON a.applicant_id = app.applicant_id WHERE app.a_number IS NOT NULL")
+    cursor.execute("SELECT a.email, a.first_name, a.last_name FROM applicants a JOIN applications app ON a.applicant_id = app.applicant_id WHERE app.a_number IS NOT NULL ORDER BY a.last_name")
     applications = cursor.fetchall()
 
     # Format the applications for the dropdown
