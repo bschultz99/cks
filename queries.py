@@ -105,6 +105,13 @@ NEW_APPLICANT_PASSWORD_SETUP = '''
 SELECT * FROM applicants;
 '''
 
+FINAL_APPLICANT_EMAIL = '''
+SELECT a.email, a.first_name, a.last_name
+FROM applicants a
+JOIN applications app ON a.applicant_id = app.applicant_id
+WHERE app.a_number IS NOT NULL;
+'''
+
 APPLICANT_ID = '''
 SELECT applicant_id FROM applicants WHERE email = %s;
 '''
@@ -183,5 +190,5 @@ essay_question_4 = excluded.essay_question_4;
 
 # ***** SCORE QUERIES *****
 COUNT_OF_APPLICATIONS = '''
-SELECT COUNT(*) FROM applications;
+SELECT COUNT(*) FROM applications WHERE a_number IS NOT NULL;
 '''

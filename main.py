@@ -150,10 +150,18 @@ def generate_scores():
     cursor.execute("SELECT * FROM applications")
     applications = cursor.fetchall()
     for application in applications:
-        gpa_score = accademic_score(application[12])
-        frat_score = fraternity_score(application[15], application[16], application[17])
-        org_score = organization_score(application[20], application[21], application[19])
-        comm_score = community_service_score(application[23])
+        cumulative_gpa = application[12] if application[12] is not None else 0
+        executive_positions = application[15] if application[15] is not None else 0
+        other_positions = application[16] if application[16] is not None else 0
+        conferences = application[17] if application[17] is not None else 0
+        semesters_involved = application[19] if application[19] is not None else 0
+        org_executive_positions = application[20] if application[20] is not None else 0
+        org_other_positions = application[21] if application[21] is not None else 0
+        community_service_hours = application[23] if application[23] is not None else 0
+        gpa_score = accademic_score(cumulative_gpa)
+        frat_score = fraternity_score(executive_positions, other_positions, conferences)
+        org_score = organization_score(org_executive_positions, org_other_positions, semesters_involved)
+        comm_score = community_service_score(community_service_hours)
         score = total_score(gpa_score, frat_score, org_score, comm_score)
         cursor.execute("UPDATE applications SET score = %s WHERE application_id = %s", (score, application[0]))
     conn.commit()
@@ -302,14 +310,14 @@ def close_scholarship_process():
     print("Removing Passwords")
     cursor.execute(REMOVE_ALL_PASSWORDS)
     conn.commit()
-    cursor.execute(NEW_APPLICANT_PASSWORD_SETUP)
-    print("Emailing Applicants")
-    applicants = cursor.fetchall()
-    for applicant in applicants:
-        send_closed_scholarship_email(applicant[3], applicant[1], applicant[2])
-        print(f"Email sent to {applicant[3]}")
-        time.sleep(5)
-    return jsonify({"status": "success", "message": "Scholarship Season has started!"}), 200
+    #cursor.execute(FINAL_APPLICANT_EMAIL)
+    #print("Emailing Applicants")
+    #applicants = cursor.fetchall()
+    #for applicant in applicants:
+    #    send_closed_scholarship_email(applicant[0], applicant[1], applicant[2])
+    #    print(f"Email sent to {applicant[0]}")
+    #    time.sleep(5)
+    return jsonify({"status": "success", "message": "Scholarship Season has ended!"}), 200
 
 
 
