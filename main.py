@@ -359,6 +359,37 @@ def forgotPassword():
 
 # Main Pages
 
+@app.route('/render_pdf/<email>', methods=['GET'])
+def render_pdf(email):
+    """Render the pdf_application.html for a given applicant."""
+    # Fetch application data for the given email
+    cursor.execute("SELECT * FROM applications WHERE applicant_id = (SELECT applicant_id FROM applicants WHERE email = %s)", (email,))
+    data = cursor.fetchone()
+    
+    if not data:
+        return jsonify({"status": "error", "message": "No application found for the given email"}), 404
+
+    # Get column names to map the data
+    columns = [desc[0] for desc in cursor.description]
+    application_data = dict(zip(columns, data))
+
+    # Format datetime fields for better readability
+    for key, value in application_data.items():
+        if isinstance(value, datetime):
+            application_data[key] = value.strftime('%Y-%m-%d')
+
+    # Fetch the applicant's name
+    cursor.execute("SELECT first_name FROM applicants WHERE email = %s", (email,))
+    name = cursor.fetchone()
+    if name:
+        application_data['applicant_first_name'] = name[0]
+    else:
+        application_data['applicant_first_name'] = "Unknown"
+
+    # Render the HTML template with the application data
+    return render_template('pdf_application.html', **application_data)
+
+
 @app.route('/application')
 def application():
     applicant_name = request.args.get('applicant_first_name', '')
