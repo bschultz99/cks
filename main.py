@@ -374,7 +374,7 @@ def application_view():
     # Fetch the selected application's data if an email is provided
     selected_application = None
     if selected_email:
-        cursor.execute("SELECT * FROM applications WHERE applicant_id = (SELECT applicant_id FROM applicants WHERE email = %s)", (selected_email,))
+        cursor.execute("SELECT * FROM applications app JOIN applicants a ON a.applicant_id = app.applicant_id WHERE applicant_id = (SELECT applicant_id FROM applicants WHERE email = %s)", (selected_email,))
         data = cursor.fetchone()
         if data:
             # Map the data to column names
