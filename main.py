@@ -380,6 +380,7 @@ def application_view():
             # Map the data to column names
             columns = [desc[0] for desc in cursor.description]
             selected_application = dict(zip(columns, data))
+            print(selected_application)
 
     # Render the template with the application list and selected application
     return render_template('application_view.html', applications=application_list, selected_application=selected_application)
