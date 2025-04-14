@@ -366,7 +366,7 @@ def application_view():
     applications = cursor.fetchall()
 
     # Format the applications for the dropdown
-    application_list = [{"email": row[0], "first_name": row[1], "last_name": row[2]} for row in applications]
+    application_list = [{"email": row[0], "first_name": row[2], "last_name": row[1]} for row in applications]
 
     # Get the selected email from the query parameters (if any)
     selected_email = request.args.get('email')
