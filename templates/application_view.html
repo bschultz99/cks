@@ -92,6 +92,17 @@
                         <div class="mb-3"><label class="form-label" for="essay_question_3">What are your goals for your time in the fraternity and afterward? How do you plan to create positive change?</label><textarea class="form-control" id="essay_question_3" name="essay_question_3" readonly>{{ selected_application.essay_question_3 if selected_application else '' }}</textarea></div>
                         <div class="mb-3"><label class="form-label" for="essay_question_4">Describe any financial or personal challenges that may impact your fraternity participation or education.</label><textarea class="form-control" id="essay_question_4" name="essay_question_4" readonly>{{ selected_application.essay_question_4 if selected_application else '' }}</textarea></div>
                     </div>
+                    <div id="Score-and-Scholarship">
+                        <label class="form-label" style="font-weight: bold;font-size: 20px;">Score and Scholarship Recommendation</label>
+                        <div class="mb-3">
+                            <label class="form-label" for="score">Score</label>
+                            <input class="form-control" type="text" id="score" name="score" value="{{ selected_application.score if selected_application else '' }}" readonly>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="recommend_scholarship_amount">Recommended Scholarship Amount</label>
+                            <input class="form-control" type="text" id="recommend_scholarship_amount" name="recommend_scholarship_amount" value="{{ selected_application.recommend_scholarship_amount if selected_application else '' }}" readonly>
+                        </div>
+                    </div>
                 </form>
             </div>
         </section>
