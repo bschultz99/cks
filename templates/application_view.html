@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html data-bs-theme="light">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Application View - HCAEPKS</title>
+    <meta name="description" content="CKS Scholarship Website for the Alpha Epsilon Chapter of Phi Kappa Sigma">
+    <link rel="stylesheet" href="static/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:300,400,700&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Actor&amp;display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Arbutus+Slab">
+    <link rel="stylesheet" href="static/css/404-NOT-FOUND-animated-v2.compiled.css">
+    <link rel="stylesheet" href="static/css/Animated-Text-Background.css">
+    <link rel="stylesheet" href="static/css/Background-Image---Parallax---No-Text.css">
+    <link rel="stylesheet" href="static/css/Login-Form-Basic-icons.css">
+    <link rel="stylesheet" href="static/css/pikaday.min.css">
+    <style>
+        .readonly-select {
+            pointer-events: none; /* Prevent user interaction */
+            background-color: #e9ecef; /* Match the appearance of a disabled field */
+            color: #495057; /* Ensure text is readable */
+        }
+    </style>
+</head>
+
+<body>
+    <main class="page" style="background: url(&quot;static/img/geometric-leaves.webp&quot;);">
+        <section class="portfolio-block hire-me">
+            <div class="container">
+                <div class="heading">
+                    <h2 style="color: var(--bs-secondary);font-weight: bold;font-size: 44px;text-shadow: 7px 9px 10px var(--bs-secondary);">Scholarship Application View</h2>
+                </div>
+                <form id="application-form" class="border rounded border-1 shadow-lg p-3 p-md-5" data-bs-theme="light" style="background: #ffffff;">
+                    <!-- Dropdown to select an application -->
+                    <div class="mb-3">
+                        <label for="application-select" class="form-label" style="font-weight: bold;">Select Application</label>
+                        <select id="application-select" class="form-select">
+                            <option value="" disabled selected>-- Select an Application --</option>
+                            {% for app in applications %}
+                                <option value="{{ app.email }}" {% if selected_application and selected_application.email == app.email %}selected{% endif %}>
+                                    {{ app.first_name }} {{ app.last_name }} ({{ app.email }})
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div id="General"><label class="form-label" style="font-weight: bold;font-size: 20px;">General</label>
+                        <div class="mb-3"><label class="form-label" for="a_number">A Number</label><input class="form-control" type="text" id="a_number" name="a_number" value="{{ selected_application.a_number if selected_application else '' }}" readonly></div>
+                        <div class="mb-3"><label class="form-label" for="first_semester">When was your first semester at IIT?</label><input class="form-control" name="first_semester" id="first_semester" type="date" value="{{ selected_application.first_semester if selected_application else '' }}" readonly></div>
+                        <div class="mb-3"><label class="form-label" for="estimated_graduation">When are you expecting to graduate from IIT?</label><input class="form-control" name="estimated_graduation" id="estimated_graduation" type="date" value="{{ selected_application.estimated_graduation if selected_application else '' }}" readonly></div>
+                        <div class="mb-3"><label class="form-label" for="active_next_year">Will you be an Active member next year?</label><select class="form-select readonly-select" name="active_next_year" id="active_next_year">
+                            <option disabled selected value> -- select an option -- </option>
+                            <option value="No" {% if selected_application and selected_application.active_next_year == 'No' %}selected{% endif %}>No</option>
+                            <option value="Yes" {% if selected_application and selected_application.active_next_year == 'Yes' %}selected{% endif %}>Yes</option>
+                            <option value="Half" {% if selected_application and selected_application.active_next_year == 'Half' %}selected{% endif %}>Yes - 1 Semester</option>
+                        </select></div>
+                        <div class="mb-3"><label class="form-label" for="live_in_house">Will you be living in the house next year?</label><select class="form-select readonly-select" id="live_in_house" name="live_in_house">
+                            <option disabled selected value> -- select an option -- </option>
+                            <option value="No" {% if selected_application and selected_application.live_in_house == 'No' %}selected{% endif %}>No</option>
+                            <option value="Yes" {% if selected_application and selected_application.live_in_house == 'Yes' %}selected{% endif %}>Yes</option>
+                        </select></div>
+                    </div>
+                    <div id="Academics"><label class="form-label" style="font-weight: bold;font-size: 20px;">Academics</label>
+                        <div class="mb-3"><label class="form-label" for="first_major">First Major</label><input class="form-control" type="text" id="first_major" name="first_major" value="{{ selected_application.first_major if selected_application else '' }}" readonly></div>
+                        <div class="mb-3"><label class="form-label" for="second_major">Second Major (If you have one)</label><input class="form-control" type="text" name="second_major" id="second_major" value="{{ selected_application.second_major if selected_application else '' }}" readonly></div>
+                        <div class="mb-3"><label class="form-label" for="first_minor">First Minor (If you have one)</label><input class="form-control" type="text" name="first_minor" id="first_minor" value="{{ selected_application.first_minor if selected_application else '' }}" readonly></div>
+                        <div class="mb-3"><label class="form-label" for="second_minor">Second Minor (If you have one)</label><input class="form-control" type="text" name="second_minor" id="second_minor" value="{{ selected_application.second_minor if selected_application else '' }}" readonly></div>
+                        <div class="mb-3"><label class="form-label" for="cumulative_gpa">Cumulative GPA</label><input class="form-control" type="number" id="cumulative_gpa" name="cumulative_gpa" value="{{ selected_application.cumulative_gpa if selected_application else '' }}" readonly></div>
+                        <div class="mb-3"><label class="form-label" for="previous_gpa">Previous Semester GPA</label><input class="form-control" type="number" id="previous_gpa" name="previous_gpa" value="{{ selected_application.previous_gpa if selected_application else '' }}" readonly></div>
+                    </div>
+                    <div id="Fraternity"><label class="form-label" style="font-weight: bold;font-size: 20px;">Fraternity</label>
+                        <div class="mb-3"><label class="form-label" for="semester_initiated">When were you initiated into the Fraternity?</label><input class="form-control" id="semester_initiated" type="date" name="semester_initiated" value="{{ selected_application.semester_initiated if selected_application else '' }}" readonly></div>
+                        <div class="mb-3"><label class="form-label" for="executive_posions_held">How many Executive Board positions have you held in the fraternity?</label><input class="form-control" type="number" id="executive_posions_held" name="executive_posions_held" value="{{ selected_application.executive_posions_held if selected_application else '' }}" readonly></div>
+                        <div class="mb-3"><label class="form-label" for="other_positions_held">How many non-executive positions have you held in the fraternity?</label><input class="form-control" type="number" id="other_positions_held" name="other_positions_held" value="{{ selected_application.other_positions_held if selected_application else '' }}" readonly></div>
+                        <div class="mb-3"><label class="form-label" for="fraternity_conferences_attended">How many Fraternity Conferences have you attended?</label><input class="form-control" type="number" id="fraternity_conferences_attended" name="fraternity_conferences_attended" value="{{ selected_application.fraternity_conferences_attended if selected_application else '' }}" readonly></div>
+                        <div class="mb-3"><label class="form-label" for="fraternity_text">Elaborate on what positions you have held and when as well as the contributions you have made in them. Elaborate on which conferences you have attended.</label><textarea class="form-control" id="fraternity_text" name="fraternity_text" value="{{ selected_application.fraternity_text if selected_application else '' }}" readonly></textarea></div>
+                    </div>
+                    <div id="Organizations"><label class="form-label" style="font-weight: bold;font-size: 20px;">Organizations</label>
+                        <div class="mb-3"><label class="form-label" for="semesters_involvement">How many semesters have you been involved in other IIT organizations?</label><input class="form-control" type="number" id="semesters_involvement" name="semesters_involvement" value="{{ selected_application.semesters_involvement if selected_application else '' }}" readonly></div>
+                        <div class="mb-3"><label class="form-label" for="other_org_executive_positions_held">How many Executive positions have you held in&nbsp;other IIT organizations?</label><input class="form-control" type="number" name="other_org_executive_positions_held" id="other_org_executive_positions_held" value="{{ selected_application.other_org_executive_positions_held if selected_application else '' }}" readonly></div>
+                        <div class="mb-3"><label class="form-label" for="other_org_positions_held">How many non-executive positions have you held in other IIT organizations?</label><input class="form-control" type="number" name="other_org_positions_held" id="other_org_positions_held" value="{{ selected_application.other_org_positions_held if selected_application else '' }}" readonly></div>
+                        <div class="mb-3"><label class="form-label" for="other_org_text">Elaborate on how you have been involved at IIT outside of the Fraternity.</label><textarea class="form-control" name="other_org_text" id="other_org_text" value="{{ selected_application.other_org_text if selected_application else '' }}" readonly></textarea></div>
+                    </div>
+                    <div id="Community-Service"><label class="form-label" style="font-weight: bold;font-size: 20px;">Community Service</label>
+                        <div class="mb-3"><label class="form-label" for="total_community_service_hours">What is the total&nbsp; hours of community service you have while in the fraternity?</label><input class="form-control" type="number" name="total_community_service_hours" id="total_community_service_hours" value="{{ selected_application.total_community_service_hours if selected_application else '' }}" readonly></div>
+                        <div class="mb-3"><label class="form-label" for="last_semester_community_service_hours">How many hours of community service did you complete last semester?</label><input class="form-control" type="number" name="last_semester_community_service_hours" id="last_semester_community_service_hours" value="{{ selected_application.last_semester_community_service_hours if selected_application else '' }}" readonly></div>
+                        <div class="mb-3"><label class="form-label" for="community_service_text">Elaborate on what community service events you have been involved in.</label><textarea class="form-control" id="community_service_text" name="community_service_text" value="{{ selected_application.community_service_text if selected_application else '' }}" readonly></textarea></div>
+                    </div>
+                    <div id="Essay-Questions"><label class="form-label" style="font-weight: bold;font-size: 20px;">Essay Questions</label>
+                        <div class="mb-3"><label class="form-label" for="essay_question_1">What motivated you to join Phi Kappa Sigma? Which aspects of our fraternity align with you and why do you feel this is the right community for you?</label><textarea class="form-control" id="essay_question_1" name="essay_question_1" value="{{ selected_application.essay_question_1 if selected_application else '' }}" readonly></textarea></div>
+                        <div class="mb-3"><label class="form-label" for="essay_question_2">Tell us about your current academic and personal involvements and your contributions to IIT, PKS, and your community? Include any leadership positions, extracurricular involvement, or community service.</label><textarea class="form-control" id="essay_question_2" name="essay_question_2" value="{{ selected_application.essay_question_2 if selected_application else '' }}" readonly></textarea></div>
+                        <div class="mb-3"><label class="form-label" for="essay_question_3">What are your goals for your time in the fraternity and afterward? How do you plan to create positive change?</label><textarea class="form-control" id="essay_question_3" name="essay_question_3" value="{{ selected_application.essay_question_3 if selected_application else '' }}" readonly></textarea></div>
+                        <div class="mb-3"><label class="form-label" for="essay_question_4">Describe any financial or personal challenges that may impact your fraternity participation or education.</label><textarea class="form-control" id="essay_question_4" name="essay_question_4" value="{{ selected_application.essay_question_4 if selected_application else '' }}" readonly></textarea></div>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+    <script src="static/js/bootstrap.min.js"></script>
+    <script src="static/js/bs-init.js"></script>
+    <script src="static/js/Animated-Text-Background-animatedTextBackground.js"></script>
+    <script src="static/js/pikaday.min.js"></script>
+    <script src="static/js/theme.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const applicationSelect = document.getElementById('application-select');
+
+            // Redirect to the selected application's view
+            applicationSelect.addEventListener('change', function () {
+                const selectedEmail = applicationSelect.value;
+                if (selectedEmail) {
+                    window.location.href = `/application_view?email=${encodeURIComponent(selectedEmail)}`;
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -358,36 +358,31 @@ def forgotPassword():
     return redirect(url_for('index'))
 
 # Main Pages
+@app.route('/application_view', methods=['GET'])
+def application_view():
+    """Render the application view page with a dropdown to select applications."""
+    # Fetch all applications with their email, first name, and last name
+    cursor.execute("SELECT a.email, a.first_name, a.last_name FROM applicants a JOIN applications app ON a.applicant_id = app.applicant_id WHERE app.a_number IS NOT NULL")
+    applications = cursor.fetchall()
 
-@app.route('/render_pdf/<email>', methods=['GET'])
-def render_pdf(email):
-    """Render the pdf_application.html for a given applicant."""
-    # Fetch application data for the given email
-    cursor.execute("SELECT * FROM applications WHERE applicant_id = (SELECT applicant_id FROM applicants WHERE email = %s)", (email,))
-    data = cursor.fetchone()
-    
-    if not data:
-        return jsonify({"status": "error", "message": "No application found for the given email"}), 404
+    # Format the applications for the dropdown
+    application_list = [{"email": row[0], "first_name": row[1], "last_name": row[2]} for row in applications]
 
-    # Get column names to map the data
-    columns = [desc[0] for desc in cursor.description]
-    application_data = dict(zip(columns, data))
+    # Get the selected email from the query parameters (if any)
+    selected_email = request.args.get('email')
 
-    # Format datetime fields for better readability
-    for key, value in application_data.items():
-        if isinstance(value, datetime):
-            application_data[key] = value.strftime('%Y-%m-%d')
+    # Fetch the selected application's data if an email is provided
+    selected_application = None
+    if selected_email:
+        cursor.execute("SELECT * FROM applications WHERE applicant_id = (SELECT applicant_id FROM applicants WHERE email = %s)", (selected_email,))
+        data = cursor.fetchone()
+        if data:
+            # Map the data to column names
+            columns = [desc[0] for desc in cursor.description]
+            selected_application = dict(zip(columns, data))
 
-    # Fetch the applicant's name
-    cursor.execute("SELECT first_name FROM applicants WHERE email = %s", (email,))
-    name = cursor.fetchone()
-    if name:
-        application_data['applicant_first_name'] = name[0]
-    else:
-        application_data['applicant_first_name'] = "Unknown"
-
-    # Render the HTML template with the application data
-    return render_template('pdf_application.html', **application_data)
+    # Render the template with the application list and selected application
+    return render_template('application_view.html', applications=application_list, selected_application=selected_application)
 
 
 @app.route('/application')
