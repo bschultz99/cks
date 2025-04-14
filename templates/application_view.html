@@ -44,6 +44,15 @@
                             {% endfor %}
                         </select>
                     </div>
+                    <div class="mb-3 text-center">
+                        <h3 style="font-weight: bold; color: var(--bs-secondary);">
+                            {% if selected_application %}
+                                {{ selected_application.first_name }} {{ selected_application.last_name }}'s Application
+                            {% else %}
+                                Select an Application to View Details
+                            {% endif %}
+                        </h3>
+                    </div>
                     <div id="General"><label class="form-label" style="font-weight: bold;font-size: 20px;">General</label>
                         <div class="mb-3"><label class="form-label" for="a_number">A Number</label><input class="form-control" type="text" id="a_number" name="a_number" value="{{ selected_application.a_number if selected_application else '' }}" readonly></div>
                         <div class="mb-3"><label class="form-label" for="first_semester">When was your first semester at IIT?</label><input class="form-control" name="first_semester" id="first_semester" type="date" value="{{ selected_application.first_semester if selected_application else '' }}" readonly></div>
