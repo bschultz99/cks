@@ -390,6 +390,27 @@ def application_view():
     # Render the template with the application list and selected application
     return render_template('application_view.html', applications=application_list, selected_application=selected_application, remaining_budget=remaining_budget)
 
+@app.route('/update_scholarship_amount', methods=['POST'])
+def update_scholarship_amount():
+    """Update the recommended scholarship amount for a specific application."""
+    data = request.get_json()
+    email = data.get('email')
+    recommended_scholarship_amount = data.get('recommended_scholarship_amount')
+
+    if not email or recommended_scholarship_amount is None:
+        return jsonify({'status': 'error', 'message': 'Invalid input'}), 400
+
+    try:
+        cursor.execute("""
+            UPDATE applications
+            SET recommended_scholarship_amount = %s
+            WHERE applicant_id = (SELECT applicant_id FROM applicants WHERE email = %s)
+        """, (recommended_scholarship_amount, email))
+        conn.commit()
+        return jsonify({'status': 'success', 'message': 'Scholarship amount updated successfully'}), 200
+    except Exception as e:
+        print(f"Error updating scholarship amount: {e}")
+        return jsonify({'status': 'error', 'message': 'Failed to update scholarship amount'}), 500
 
 @app.route('/application')
 def application():

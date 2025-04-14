@@ -113,9 +113,10 @@
                             <input class="form-control" type="text" id="score" name="score" value="{{ selected_application.score if selected_application else '' }}" readonly>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label" for="recommend_scholarship_amount">Recommended Scholarship Amount</label>
-                            <input class="form-control" type="text" id="recommend_scholarship_amount" name="recommend_scholarship_amount" value="{{ selected_application.recommended_scholarship_amount if selected_application else '' }}" readonly>
+                            <label class="form-label" for="recommended_scholarship_amount">Recommended Scholarship Amount</label>
+                            <input class="form-control" type="number" id="recommended_scholarship_amount" name="recommended_scholarship_amount" value="{{ selected_application.recommended_scholarship_amount if selected_application else '' }}">
                         </div>
+                        <button type="button" id="save-scholarship-amount" class="btn btn-primary">Save</button>
                     </div>
                 </form>
             </div>
@@ -128,14 +129,46 @@
     <script src="static/js/theme.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const applicationSelect = document.getElementById('application-select');
-
-            // Redirect to the selected application's view
-            applicationSelect.addEventListener('change', function () {
-                const selectedEmail = applicationSelect.value;
-                if (selectedEmail) {
-                    window.location.href = `/application_view?email=${encodeURIComponent(selectedEmail)}`;
+            const saveButton = document.getElementById('save-scholarship-amount');
+            const scholarshipAmountInput = document.getElementById('recommended_scholarship_amount');
+            const emailInput = document.getElementById('application-select'); // Assuming the email is selected in the dropdown
+    
+            saveButton.addEventListener('click', function () {
+                const email = emailInput.value;
+                const updatedAmount = scholarshipAmountInput.value;
+    
+                if (!email) {
+                    alert('Please select an application first.');
+                    return;
                 }
+    
+                fetch('/update_scholarship_amount', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        recommended_scholarship_amount: updatedAmount,
+                    }),
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`Error: ${response.statusText}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.status === 'success') {
+                            alert('Scholarship amount updated successfully!');
+                        } else {
+                            alert('Failed to update scholarship amount.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while updating the scholarship amount.');
+                    });
             });
         });
     </script>
