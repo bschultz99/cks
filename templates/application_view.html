@@ -132,7 +132,8 @@
             const saveButton = document.getElementById('save-scholarship-amount');
             const scholarshipAmountInput = document.getElementById('recommended_scholarship_amount');
             const emailInput = document.getElementById('application-select'); // Assuming the email is selected in the dropdown
-
+            const applicationSelect = document.getElementById('application-select');
+            
             applicationSelect.addEventListener('change', function () {
                 const selectedEmail = applicationSelect.value;
                 if (selectedEmail) {
