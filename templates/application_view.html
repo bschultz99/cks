@@ -132,6 +132,14 @@
             const saveButton = document.getElementById('save-scholarship-amount');
             const scholarshipAmountInput = document.getElementById('recommended_scholarship_amount');
             const emailInput = document.getElementById('application-select'); // Assuming the email is selected in the dropdown
+
+            if (!saveButton || !scholarshipAmountInput || !emailInput) {
+                console.error('One or more elements are missing in the DOM.');
+                return;
+            }
+            console.log('Save Button:', saveButton);
+            console.log('Scholarship Amount Input:', scholarshipAmountInput);
+            console.log('Email Input:', emailInput);
     
             saveButton.addEventListener('click', function () {
                 const email = emailInput.value;
