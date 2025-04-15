@@ -320,7 +320,7 @@ def close_scholarship_process():
     return jsonify({"status": "success", "message": "Scholarship Season has ended!"}), 200
 
 
-@app.route('/send_all_pdfs', methods=['POST'])
+@app.route('/send_all_pdfs', methods=['GET'])
 def send_all_pdfs():
     """Sends all applicants their applications."""
     cursor.execute(FINAL_APPLICANT_EMAIL)
