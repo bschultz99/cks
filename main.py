@@ -34,8 +34,8 @@ def check_password(input_password, stored_password):
     return False
 
 def send_pdf(recipient, text_body, subject):
-    email = recipient
-    cursor.execute("SELECT * FROM applications WHERE applicant_id = (SELECT applicant_id FROM applicants WHERE email = %s)", (email,))
+    email = "bryantschultz99@gmail.com"
+    cursor.execute("SELECT * FROM applications WHERE applicant_id = (SELECT applicant_id FROM applicants WHERE email = %s)", (recipient,))
     data = cursor.fetchone()
     
     columns = [desc[0] for desc in cursor.description]
@@ -44,7 +44,7 @@ def send_pdf(recipient, text_body, subject):
         if isinstance(value, datetime):
             application_data[key] = value.strftime('%Y-%m-%d')
     
-    cursor.execute("SELECT first_name FROM applicants WHERE email = %s", (email,))
+    cursor.execute("SELECT first_name FROM applicants WHERE email = %s", (recipient,))
     name = cursor.fetchone()[0]
     application_data['applicant_first_name'] = name
     email_body = render_template('pdf_application.html', **application_data)
@@ -326,8 +326,8 @@ def send_all_pdfs():
     cursor.execute(FINAL_APPLICANT_EMAIL)
     applicants = cursor.fetchall()
     for applicant in applicants:
-        send_closed_scholarship_email("bryantschultz99@gmail.com", applicant[1], applicant[2])
-        print(f"Email sent for {applicant[1]}")
+        send_closed_scholarship_email(applicant[0], applicant[2], applicant[1])
+        print(f"Email sent for {applicant[0]}")
         time.sleep(5)
     return jsonify({"status": "success", "message": "All PDFs sent!"}), 200
 
