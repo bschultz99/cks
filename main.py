@@ -320,6 +320,17 @@ def close_scholarship_process():
     return jsonify({"status": "success", "message": "Scholarship Season has ended!"}), 200
 
 
+@app.route('/send_all_pdfs', methods=['POST'])
+def send_all_pdfs():
+    """Sends all applicants their applications."""
+    cursor.execute(FINAL_APPLICANT_EMAIL)
+    applicants = cursor.fetchall()
+    for applicant in applicants:
+        send_closed_scholarship_email("bryantschultz99@gmail.com", applicant[1], applicant[2])
+        print(f"Email sent for {applicant[1]}")
+        time.sleep(5)
+    return jsonify({"status": "success", "message": "All PDFs sent!"}), 200
+
 
 # Login Logic
 @app.route('/login', methods=['POST'])
