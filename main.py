@@ -28,6 +28,16 @@ ADMIN_CREDENTIALS = {
 def require_admin_auth():
     """Check if request contains valid admin credentials."""
     auth = request.authorization
+    # Debug logging
+    print(f"DEBUG: Received auth: {auth}")
+    if auth:
+        print(f"DEBUG: Username received: '{auth.username}'")
+        print(f"DEBUG: Password received: '{auth.password}'")
+        print(f"DEBUG: Expected username: '{ADMIN_CREDENTIALS['username']}'")
+        print(f"DEBUG: Expected password: '{ADMIN_CREDENTIALS['password']}'")
+        print(f"DEBUG: Username match: {auth.username == ADMIN_CREDENTIALS['username']}")
+        print(f"DEBUG: Password match: {auth.password == ADMIN_CREDENTIALS['password']}")
+    
     if not auth or not (auth.username == ADMIN_CREDENTIALS["username"] and auth.password == ADMIN_CREDENTIALS["password"]):
         # Return 401 with WWW-Authenticate header to trigger browser login prompt
         response = make_response(jsonify({"status": "error", "message": "Unauthorized"}), 401)
