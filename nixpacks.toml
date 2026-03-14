@@ -1,0 +1,2 @@
+[build]
+nixpkgs = ["cairo", "libpng", "libxml2", "zlib"]

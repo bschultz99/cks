@@ -28,18 +28,18 @@ CREATE TABLE IF NOT EXISTS applications (
     executive_posions_held INTEGER,
     other_positions_held INTEGER,
     fraternity_conferences_attended INTEGER,
-    fraternity_text VARCHAR(10000),
+    fraternity_text TEXT,
     semesters_involvement INTEGER,
     other_org_executive_positions_held INTEGER,
     other_org_positions_held INTEGER,
-    other_org_text VARCHAR(10000),
+    other_org_text TEXT,
     total_community_service_hours INTEGER,
     last_semester_community_service_hours INTEGER,
-    community_service_text VARCHAR(10000),
-    essay_question_1 VARCHAR(10000),
-    essay_question_2 VARCHAR(10000),
-    essay_question_3 VARCHAR(10000),
-    essay_question_4 VARCHAR(10000),
+    community_service_text TEXT,
+    essay_question_1 TEXT,
+    essay_question_2 TEXT,
+    essay_question_3 TEXT,
+    essay_question_4 TEXT,
     score FLOAT,
     recommended_scholarship_amount INTEGER
     );
@@ -90,11 +90,12 @@ INSERT INTO applicants(first_name,
                        last_name,
                        email,
                        password)
-VALUES (%s, %s, %s)
+VALUES (%s, %s, %s, %s)
 ON CONFLICT (email)
 DO UPDATE SET first_name = excluded.first_name,
               last_name = excluded.last_name,
-              email = excluded.email;
+              email = excluded.email,
+              password = excluded.password;
 '''
 
 NEW_APPLICANT_PASSWORD_UPDATE = '''

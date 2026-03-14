@@ -17,6 +17,19 @@ app = Flask(__name__)
 # Global flag to ensure code runs only once
 code_executed = False
 
+# Admin Authentication
+ADMIN_CREDENTIALS = {
+    "username": os.getenv("ADMIN_USERNAME", "admin"),
+    "password": os.getenv("ADMIN_PASSWORD", "changeme")
+}
+
+def require_admin_auth():
+    """Check if request contains valid admin credentials."""
+    auth = request.authorization
+    if not auth or not (auth.username == ADMIN_CREDENTIALS["username"] and auth.password == ADMIN_CREDENTIALS["password"]):
+        return False
+    return True
+
 # Helper Methods
 def generate_password():
     characters = string.ascii_letters + string.digits + string.punctuation
@@ -55,7 +68,8 @@ def send_pdf(recipient, text_body, subject):
         try:
             pisa.CreatePDF(email_body, dest=pdf_file)
         except Exception as e:
-            ignore = e
+            print(f"Error generating PDF: {e}")
+            return 500
     
     # Send the email with the PDF attachment
     return send_email(email, text_body, subject, pdf_path)
@@ -69,19 +83,27 @@ def send_email(recipient, text_body, subject, pdf_path=None):
     sender = "cks@{}".format(domain)
     url = f'https://api.mailgun.net/v3/{domain}/messages'
     files={}
-    if pdf_path:
-        files = {'attachment': (os.path.basename(pdf_path), open(pdf_path, 'rb'))}
-    response = requests.post(
-        url,
-        auth=('api', api_key),
-        data={'from': sender,
-              'to': recipient,
-              'subject': subject,
-              'text': text_body},
-        files=files)
-    
-    print(response)
-    return response.status_code
+    pdf_file = None
+    try:
+        if pdf_path:
+            pdf_file = open(pdf_path, 'rb')
+            files = {'attachment': (os.path.basename(pdf_path), pdf_file)}
+        response = requests.post(
+            url,
+            auth=('api', api_key),
+            data={'from': sender,
+                  'to': recipient,
+                  'subject': subject,
+                  'text': text_body},
+            files=files)
+        
+        print(response)
+        return response.status_code
+    finally:
+        if pdf_file:
+            pdf_file.close()
+        if pdf_path and os.path.exists(pdf_path):
+            os.remove(pdf_path)
 
 def send_new_applicant_email(email, password, first_name, last_name):
     subject = "Carroll Simons Scholarship Application Login"
@@ -89,7 +111,7 @@ def send_new_applicant_email(email, password, first_name, last_name):
     An account has been created for you to apply for the Carroll Simons Scholarship.\n
     Your email is: {email} and your password is: {password}\n\n
     Please login at https://cks.aepkshc.org/ to complete your application.\n\n
-    We recommend maintianing a copy of your application for your records as this is the first use of the new scholarship system.\n\n
+    We recommend maintaining a copy of your application for your records as this is the first use of the new scholarship system.\n\n
     Thank you,\n
     Carroll Simons Scholarship Committee"""
     return send_email(email, text_body, subject)
@@ -270,6 +292,9 @@ def load_application():
 @app.route('/add_applicants', methods=['POST'])
 def add_applicants():
     """Add applicants to the database."""
+    if not require_admin_auth():
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
     if 'file' not in request.files:
         return jsonify({"status": "error", "message": "No file part"}), 400
 
@@ -277,18 +302,30 @@ def add_applicants():
     if file.filename == '':
         return jsonify({"status": "error", "message": "No selected file"}), 400
 
-    stream = file.stream.read().decode("utf-8").splitlines()  
-    reader = csv.reader(stream)
-
-    for row in reader:
-        first_name, last_name, email = row
-        cursor.execute(NEW_APPLICANTS_ADD, (first_name.strip(), last_name.strip(), email.strip()))
-        conn.commit()
-    return jsonify({"status": "success", "message": "Applicants added successfully"}), 200
+    try:
+        stream = file.stream.read().decode("utf-8").splitlines()  
+        reader = csv.reader(stream)
+        added_count = 0
+        for row in reader:
+            if len(row) < 3:
+                return jsonify({"status": "error", "message": "CSV must contain first_name, last_name, and email columns"}), 400
+            first_name, last_name, email = row[0], row[1], row[2]
+            if not first_name.strip() or not last_name.strip() or not email.strip():
+                return jsonify({"status": "error", "message": "All fields (first_name, last_name, email) are required"}), 400
+            cursor.execute(NEW_APPLICANTS_ADD, (first_name.strip(), last_name.strip(), email.strip()))
+            conn.commit()
+            added_count += 1
+        return jsonify({"status": "success", "message": f"Successfully added {added_count} applicants"}), 200
+    except Exception as e:
+        conn.rollback()
+        return jsonify({"status": "error", "message": f"Failed to process CSV: {str(e)}"}), 400
 
 @app.route('/begin_scholarship_process', methods=['POST'])
 def begin_scholarship_process():
     """Creates a password for all applicants and sends them an email. Starts the application process."""
+    if not require_admin_auth():
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
     cursor.execute(NEW_APPLICANT_PASSWORD_SETUP)
     applicants = cursor.fetchall()
     for applicant in applicants:
@@ -304,6 +341,9 @@ def begin_scholarship_process():
 @app.route('/close_scholarship_process', methods=['POST'])
 def close_scholarship_process():
     """Closes the scholarship process and calculates the scores for all applicants."""
+    if not require_admin_auth():
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
     print("Generating Scores")
     generate_scores()
     generate_scholarship_amounts()
@@ -323,6 +363,9 @@ def close_scholarship_process():
 @app.route('/send_all_pdfs', methods=['GET'])
 def send_all_pdfs():
     """Sends all applicants their applications."""
+    if not require_admin_auth():
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+
     cursor.execute(FINAL_APPLICANT_EMAIL)
     applicants = cursor.fetchall()
     for applicant in applicants:
@@ -372,6 +415,9 @@ def forgotPassword():
 @app.route('/application_view', methods=['GET'])
 def application_view():
     """Render the application view page with a dropdown to select applications."""
+    if not require_admin_auth():
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+    
     # Fetch all applications with their email, first name, and last name
     cursor.execute("SELECT a.email, a.first_name, a.last_name FROM applicants a JOIN applications app ON a.applicant_id = app.applicant_id WHERE app.a_number IS NOT NULL ORDER BY a.first_name")
     applications = cursor.fetchall()
@@ -442,6 +488,8 @@ def index():
 
 @app.route('/admin')
 def admin():
+    if not require_admin_auth():
+        return jsonify({"status": "error", "message": "Unauthorized"}), 401
     return render_template('admin.html')
 
 @app.route('/error')
@@ -462,8 +510,8 @@ if __name__ == "__main__":
                                 password=os.getenv("POSTGRES_PASSWORD"),
                                 port=os.getenv("PGPORT"))
         cursor = conn.cursor()
-        #cursor.execute("UPDATE key_values SET start_date = '2025-03-06', end_date = '2025-04-06';")
-        #conn.commit()
+        cursor.execute("DROP TABLE IF EXISTS reviews, reviewers, key_values, applications, applicants CASCADE;")
+        conn.commit()
         cursor.execute(CREATE_TABLES)
         conn.commit()
         code_executed = True
