@@ -59,7 +59,6 @@ def check_password(input_password, stored_password):
 
 def send_pdf(recipient, text_body, subject):
     """Generate a simple PDF with application data and send via email."""
-    sender_email = "bryantschultz99@gmail.com"
     cursor.execute("SELECT * FROM applications WHERE applicant_id = (SELECT applicant_id FROM applicants WHERE email = %s)", (recipient,))
     data = cursor.fetchone()
     
@@ -147,7 +146,7 @@ def send_pdf(recipient, text_body, subject):
         f.write(pdf_buffer.getvalue())
     
     try:
-        result = send_email(sender_email, text_body, subject, pdf_path)
+        result = send_email(recipient, text_body, subject, pdf_path)
         return result
     finally:
         if os.path.exists(pdf_path):
