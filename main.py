@@ -484,6 +484,8 @@ def login():
     print(f"Stored Password: {stored_password}")
     if not stored_password:
         return redirect(url_for('error', message='Applicant does not exist'))
+    if not stored_password[0]:
+        return redirect(url_for('error', message='Scholarship application period has ended'))
     if check_password(password, stored_password[0]):
         cursor.execute(APPLICANT_NAME, (email,))
         name = cursor.fetchone()
