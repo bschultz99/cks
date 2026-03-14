@@ -25,27 +25,10 @@ ADMIN_CREDENTIALS = {
     "password": os.getenv("ADMIN_PASSWORD", "changeme").strip()
 }
 
-print(f"STARTUP DEBUG - Loaded ADMIN_USERNAME: '{ADMIN_CREDENTIALS['username']}' (length: {len(ADMIN_CREDENTIALS['username'])})")
-print(f"STARTUP DEBUG - Loaded ADMIN_PASSWORD: '{ADMIN_CREDENTIALS['password']}' (length: {len(ADMIN_CREDENTIALS['password'])})")
-print(f"STARTUP DEBUG - Raw env var ADMIN_USERNAME: '{os.getenv('ADMIN_USERNAME', 'NOT_SET')}'")
-print(f"STARTUP DEBUG - Raw env var ADMIN_PASSWORD: '{os.getenv('ADMIN_PASSWORD', 'NOT_SET')}'")
-print(f"STARTUP DEBUG - Raw env var (no strip) ADMIN_USERNAME: repr={repr(os.getenv('ADMIN_USERNAME', 'NOT_SET'))}")
-
 def require_admin_auth():
     """Check if request contains valid admin credentials."""
     auth = request.authorization
-    if not auth:
-        print("DEBUG: No auth provided")
-        response = make_response(jsonify({"status": "error", "message": "Unauthorized"}), 401)
-        response.headers['WWW-Authenticate'] = 'Basic realm="Admin Portal"'
-        return response
-    
-    print(f"DEBUG: Username received: '{auth.username}' vs expected: '{ADMIN_CREDENTIALS['username']}'")
-    print(f"DEBUG: Password received: '{auth.password}' vs expected: '{ADMIN_CREDENTIALS['password']}'")
-    print(f"DEBUG: Username match: {auth.username == ADMIN_CREDENTIALS['username']}")
-    print(f"DEBUG: Password match: {auth.password == ADMIN_CREDENTIALS['password']}")
-    
-    if not (auth.username == ADMIN_CREDENTIALS["username"] and auth.password == ADMIN_CREDENTIALS["password"]):
+    if not auth or not (auth.username == ADMIN_CREDENTIALS["username"] and auth.password == ADMIN_CREDENTIALS["password"]):
         # Return 401 with WWW-Authenticate header to trigger browser login prompt
         response = make_response(jsonify({"status": "error", "message": "Unauthorized"}), 401)
         response.headers['WWW-Authenticate'] = 'Basic realm="Admin Portal"'
