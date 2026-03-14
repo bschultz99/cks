@@ -29,8 +29,16 @@ def require_admin_auth():
     """Check if request contains valid admin credentials."""
     auth = request.authorization
     if not auth or not (auth.username == ADMIN_CREDENTIALS["username"] and auth.password == ADMIN_CREDENTIALS["password"]):
-        return False
+        # Return 401 with WWW-Authenticate header to trigger browser login prompt
+        response = make_response(jsonify({"status": "error", "message": "Unauthorized"}), 401)
+        response.headers['WWW-Authenticate'] = 'Basic realm="Admin Portal"'
+        return response
     return True
+
+def check_admin_auth():
+    """Decorator-style check that returns True/False for route guards."""
+    auth = request.authorization
+    return auth and (auth.username == ADMIN_CREDENTIALS["username"] and auth.password == ADMIN_CREDENTIALS["password"])
 
 # Helper Methods
 def generate_password():
@@ -318,8 +326,9 @@ def load_application():
 @app.route('/add_applicants', methods=['POST'])
 def add_applicants():
     """Add applicants to the database."""
-    if not require_admin_auth():
-        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+    auth_result = require_admin_auth()
+    if auth_result is not True:
+        return auth_result
 
     if 'file' not in request.files:
         return jsonify({"status": "error", "message": "No file part"}), 400
@@ -349,8 +358,9 @@ def add_applicants():
 @app.route('/begin_scholarship_process', methods=['POST'])
 def begin_scholarship_process():
     """Creates a password for all applicants and sends them an email. Starts the application process."""
-    if not require_admin_auth():
-        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+    auth_result = require_admin_auth()
+    if auth_result is not True:
+        return auth_result
 
     cursor.execute(NEW_APPLICANT_PASSWORD_SETUP)
     applicants = cursor.fetchall()
@@ -367,8 +377,9 @@ def begin_scholarship_process():
 @app.route('/close_scholarship_process', methods=['POST'])
 def close_scholarship_process():
     """Closes the scholarship process and calculates the scores for all applicants."""
-    if not require_admin_auth():
-        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+    auth_result = require_admin_auth()
+    if auth_result is not True:
+        return auth_result
 
     print("Generating Scores")
     generate_scores()
@@ -389,8 +400,9 @@ def close_scholarship_process():
 @app.route('/send_all_pdfs', methods=['GET'])
 def send_all_pdfs():
     """Sends all applicants their applications."""
-    if not require_admin_auth():
-        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+    auth_result = require_admin_auth()
+    if auth_result is not True:
+        return auth_result
 
     cursor.execute(FINAL_APPLICANT_EMAIL)
     applicants = cursor.fetchall()
@@ -441,8 +453,9 @@ def forgotPassword():
 @app.route('/application_view', methods=['GET'])
 def application_view():
     """Render the application view page with a dropdown to select applications."""
-    if not require_admin_auth():
-        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+    auth_result = require_admin_auth()
+    if auth_result is not True:
+        return auth_result
     
     # Fetch all applications with their email, first name, and last name
     cursor.execute("SELECT a.email, a.first_name, a.last_name FROM applicants a JOIN applications app ON a.applicant_id = app.applicant_id WHERE app.a_number IS NOT NULL ORDER BY a.first_name")
@@ -514,8 +527,9 @@ def index():
 
 @app.route('/admin')
 def admin():
-    if not require_admin_auth():
-        return jsonify({"status": "error", "message": "Unauthorized"}), 401
+    auth_result = require_admin_auth()
+    if auth_result is not True:
+        return auth_result
     return render_template('admin.html')
 
 @app.route('/error')
