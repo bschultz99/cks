@@ -224,7 +224,7 @@ def generate_scores():
     conn.commit()
 
 def generate_scholarship_amounts():
-    SCHOLARHIP_AMOUNT = 46000
+    SCHOLARHIP_AMOUNT = 45000
     SMALLEST_SCHOLARSHIP = 1000
     cursor.execute(COUNT_OF_APPLICATIONS)
     count = cursor.fetchone()[0]
@@ -388,14 +388,14 @@ def close_scholarship_process():
     print("Removing Passwords")
     cursor.execute(REMOVE_ALL_PASSWORDS)
     conn.commit()
-    #cursor.execute(FINAL_APPLICANT_EMAIL)
-    #print("Emailing Applicants")
-    #applicants = cursor.fetchall()
-    #for applicant in applicants:
-    #    send_closed_scholarship_email(applicant[0], applicant[1], applicant[2])
-    #    print(f"Email sent to {applicant[0]}")
-    #    time.sleep(5)
-    return jsonify({"status": "success", "message": "Scholarship Season has ended!"}), 200
+    cursor.execute(FINAL_APPLICANT_EMAIL)
+    print("Emailing Applicants")
+    applicants = cursor.fetchall()
+    for applicant in applicants:
+        send_closed_scholarship_email(applicant[0], applicant[2], applicant[1])
+        print(f"Email sent to {applicant[0]}")
+        time.sleep(5)
+    return jsonify({"status": "success", "message": "Scholarship Season has ended and emails sent to all applicants!"}), 200
 
 
 @app.route('/send_all_pdfs', methods=['GET'])
