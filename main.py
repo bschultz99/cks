@@ -80,12 +80,14 @@ def send_pdf(recipient, text_body, subject):
     
     c.setFont("Helvetica", 10)
     y_position = 720
+    margin_left = 50
+    margin_right = 550
+    max_width = margin_right - margin_left - 20
     
-    # Add key application fields to PDF with text wrapping and page breaks
+    # Add key application fields to PDF
     for key, value in application_data.items():
         if value and key not in ['applicant_id', 'application_id', 'updated_at', 'score', 'recommended_scholarship_amount']:
             label = key.replace('_', ' ').title()
-            text_value = str(value)
             
             # Check if we need a page break before writing the label
             if y_position < 100:
@@ -96,40 +98,45 @@ def send_pdf(recipient, text_body, subject):
                 y_position = 720
             
             # Write the label
-            c.drawString(50, y_position, f"{label}:")
-            y_position -= 12
+            c.drawString(margin_left, y_position, f"{label}:")
+            y_position -= 15
             
-            # Wrap long text across multiple lines (max 85 chars per line)
+            # Use reportlab's built-in text wrapping via Paragraph would be better,
+            # but for simplicity, manually wrap text character by character
+            text_value = str(value)
             words = text_value.split(' ')
-            current_line = ""
-            for word in words:
-                if len(current_line) + len(word) + 1 <= 85:
-                    current_line += word + " "
-                else:
-                    if current_line:
-                        # Check for page break before drawing each line
-                        if y_position < 50:
-                            c.showPage()
-                            c.setFont("Helvetica-Bold", 14)
-                            c.drawString(50, 750, f"{name}'s Application (continued)")
-                            c.setFont("Helvetica", 10)
-                            y_position = 720
-                        c.drawString(70, y_position, current_line.strip())
-                        y_position -= 12
-                    current_line = word + " "
             
-            # Draw any remaining text
+            lines = []
+            current_line = ""
+            
+            for word in words:
+                test_line = (current_line + " " + word).strip() if current_line else word
+                if c.stringWidth(test_line, "Helvetica", 10) > max_width:
+                    if current_line:
+                        lines.append(current_line)
+                        current_line = word
+                    else:
+                        # Word is too long, add it anyway
+                        lines.append(word)
+                        current_line = ""
+                else:
+                    current_line = test_line
+            
             if current_line:
+                lines.append(current_line)
+            
+            # Draw all the lines
+            for line in lines:
                 if y_position < 50:
                     c.showPage()
                     c.setFont("Helvetica-Bold", 14)
                     c.drawString(50, 750, f"{name}'s Application (continued)")
                     c.setFont("Helvetica", 10)
                     y_position = 720
-                c.drawString(70, y_position, current_line.strip())
+                c.drawString(margin_left + 20, y_position, line)
                 y_position -= 12
             
-            y_position -= 6  # Extra space between fields
+            y_position -= 8  # Extra space between fields
     
     c.save()
     pdf_buffer.seek(0)
