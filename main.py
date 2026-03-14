@@ -81,17 +81,38 @@ def send_pdf(recipient, text_body, subject):
     c.setFont("Helvetica", 10)
     y_position = 720
     
-    # Add key application fields to PDF
+    # Add key application fields to PDF with text wrapping
     for key, value in application_data.items():
         if value and key not in ['applicant_id', 'application_id', 'updated_at', 'score', 'recommended_scholarship_amount']:
             label = key.replace('_', ' ').title()
-            text = f"{label}: {value}"
-            if len(text) > 90:
-                text = text[:87] + "..."
-            c.drawString(50, y_position, text)
-            y_position -= 15
+            text_value = str(value)
+            
+            # Write the label
+            c.drawString(50, y_position, f"{label}:")
+            y_position -= 12
+            
+            # Wrap long text across multiple lines (max 85 chars per line)
+            words = text_value.split(' ')
+            current_line = ""
+            for word in words:
+                if len(current_line) + len(word) + 1 <= 85:
+                    current_line += word + " "
+                else:
+                    if current_line:
+                        c.drawString(70, y_position, current_line.strip())
+                        y_position -= 12
+                    current_line = word + " "
+            
+            # Draw any remaining text
+            if current_line:
+                c.drawString(70, y_position, current_line.strip())
+                y_position -= 12
+            
+            y_position -= 6  # Extra space between fields
+            
             if y_position < 50:
                 c.showPage()
+                c.setFont("Helvetica", 10)
                 y_position = 750
     
     c.save()
@@ -391,9 +412,9 @@ def close_scholarship_process():
     
     # Fetch all applicants and email them
     print("Emailing Applicants")
-    cursor.execute("SELECT email, first_name, last_name FROM applicants ORDER BY first_name")
+    cursor.execute("SELECT email, first_name, last_name FROM applicants a JOIN applications app ON a.applicant_id = app.applicant_id WHERE app.a_number IS NOT NULL ORDER BY a.first_name")
     applicants = cursor.fetchall()
-    print(f"Found {len(applicants)} applicants to email")
+    print(f"Found {len(applicants)} applicants with completed applications to email")
     
     email_count = 0
     for applicant in applicants:
