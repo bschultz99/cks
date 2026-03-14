@@ -388,14 +388,28 @@ def close_scholarship_process():
     print("Removing Passwords")
     cursor.execute(REMOVE_ALL_PASSWORDS)
     conn.commit()
-    cursor.execute(FINAL_APPLICANT_EMAIL)
+    
+    # Fetch all applicants and email them
     print("Emailing Applicants")
+    cursor.execute("SELECT email, first_name, last_name FROM applicants ORDER BY first_name")
     applicants = cursor.fetchall()
+    print(f"Found {len(applicants)} applicants to email")
+    
+    email_count = 0
     for applicant in applicants:
-        send_closed_scholarship_email(applicant[0], applicant[2], applicant[1])
-        print(f"Email sent to {applicant[0]}")
-        time.sleep(5)
-    return jsonify({"status": "success", "message": "Scholarship Season has ended and emails sent to all applicants!"}), 200
+        try:
+            email = applicant[0]
+            first_name = applicant[1]
+            last_name = applicant[2]
+            send_closed_scholarship_email(email, first_name, last_name)
+            email_count += 1
+            print(f"Email sent to {email}")
+            time.sleep(5)
+        except Exception as e:
+            print(f"Error sending email to {applicant[0]}: {e}")
+            continue
+    
+    return jsonify({"status": "success", "message": f"Scholarship Season has ended! Sent emails to {email_count} applicants."}), 200
 
 
 @app.route('/send_all_pdfs', methods=['GET'])
