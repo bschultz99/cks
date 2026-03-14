@@ -28,6 +28,7 @@
                     <input class="form-control" type="file", id="fileInput" accept=".csv">
                     <div class="mb-3"></div><button class="btn btn-primary btn-lg d-block w-100" type="button" id="add-members">Add Members</button></div>
                     <div class="mb-3"></div><button class="btn btn-primary btn-lg d-block w-100" type="button" id="start-scholarship">Start Scholarship</button></div>
+                    <div class="mb-3"></div><button class="btn btn-primary btn-lg d-block w-100" type="button" id="view-applications">View Applications</button></div>
                     <div class="mb-3"></div><button class="btn btn-primary btn-lg d-block w-100" type="button" id="end-scholarship">End Scholarship</button></div>
                 </form>
             </div>
@@ -102,6 +103,11 @@
                     console.error('Error:', error);
                     alert('An error occurred while ending the scholarship season.');
                 });
+            });
+    </script>
+    <script>
+        document.getElementById('view-applications').addEventListener('click', function () {
+                window.location.href = '/application_view';
             });
     </script>
 </body>
