@@ -81,11 +81,19 @@ def send_pdf(recipient, text_body, subject):
     c.setFont("Helvetica", 10)
     y_position = 720
     
-    # Add key application fields to PDF with text wrapping
+    # Add key application fields to PDF with text wrapping and page breaks
     for key, value in application_data.items():
         if value and key not in ['applicant_id', 'application_id', 'updated_at', 'score', 'recommended_scholarship_amount']:
             label = key.replace('_', ' ').title()
             text_value = str(value)
+            
+            # Check if we need a page break before writing the label
+            if y_position < 100:
+                c.showPage()
+                c.setFont("Helvetica-Bold", 14)
+                c.drawString(50, 750, f"{name}'s Application (continued)")
+                c.setFont("Helvetica", 10)
+                y_position = 720
             
             # Write the label
             c.drawString(50, y_position, f"{label}:")
@@ -99,21 +107,29 @@ def send_pdf(recipient, text_body, subject):
                     current_line += word + " "
                 else:
                     if current_line:
+                        # Check for page break before drawing each line
+                        if y_position < 50:
+                            c.showPage()
+                            c.setFont("Helvetica-Bold", 14)
+                            c.drawString(50, 750, f"{name}'s Application (continued)")
+                            c.setFont("Helvetica", 10)
+                            y_position = 720
                         c.drawString(70, y_position, current_line.strip())
                         y_position -= 12
                     current_line = word + " "
             
             # Draw any remaining text
             if current_line:
+                if y_position < 50:
+                    c.showPage()
+                    c.setFont("Helvetica-Bold", 14)
+                    c.drawString(50, 750, f"{name}'s Application (continued)")
+                    c.setFont("Helvetica", 10)
+                    y_position = 720
                 c.drawString(70, y_position, current_line.strip())
                 y_position -= 12
             
             y_position -= 6  # Extra space between fields
-            
-            if y_position < 50:
-                c.showPage()
-                c.setFont("Helvetica", 10)
-                y_position = 750
     
     c.save()
     pdf_buffer.seek(0)
@@ -519,7 +535,7 @@ def application_view():
     # Calculate the total remaining scholarship budget
     cursor.execute("SELECT SUM(recommended_scholarship_amount) FROM applications WHERE recommended_scholarship_amount IS NOT NULL")
     total_allocated = cursor.fetchone()[0] or 0  # Default to 0 if no scholarships are allocated
-    total_budget = 46000  # Example total budget, replace with your actual budget
+    total_budget = 45000  # Example total budget, replace with your actual budget
     remaining_budget = total_budget - total_allocated
 
     # Render the template with the application list and selected application
