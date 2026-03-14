@@ -1,4 +1,4 @@
-from flask import Flask, Response, render_template, redirect, url_for, request, jsonify, make_response
+from flask import Flask, Response, render_template, redirect, url_for, request, jsonify, make_response, session
 from queries import *
 import os, psycopg2
 import secrets
@@ -15,6 +15,7 @@ from reportlab.lib.pagesizes import letter
 from io import BytesIO
 
 app = Flask(__name__)
+app.secret_key = os.getenv("SECRET_KEY", os.urandom(24))
 
 # Global flag to ensure code runs only once
 code_executed = False
@@ -145,7 +146,7 @@ def send_new_applicant_email(email, password, first_name, last_name):
     An account has been created for you to apply for the Carroll Simons Scholarship.\n
     Your email is: {email} and your password is: {password}\n\n
     Please login at https://cks.aepkshc.org/ to complete your application.\n\n
-    We recommend maintaining a copy of your application for your records as this is the first use of the new scholarship system.\n\n
+    We recommend maintaining a copy of your application for your records.\n\n
     Thank you,\n
     Carroll Simons Scholarship Committee"""
     return send_email(email, text_body, subject)
@@ -428,7 +429,10 @@ def login():
     if check_password(password, stored_password[0]):
         cursor.execute(APPLICANT_NAME, (email,))
         name = cursor.fetchone()
-        return redirect(url_for('application', applicant_first_name=name[0], applicant_email=email))
+        # Set session cookie with applicant email for authentication
+        session['applicant_email'] = email
+        session['applicant_name'] = name[0]
+        return redirect(url_for('application'))
     else:
         return redirect(url_for('error', message='Incorrect password'))
 
@@ -510,10 +514,12 @@ def update_scholarship_amount():
 
 @app.route('/application')
 def application():
-    applicant_name = request.args.get('applicant_first_name', '')
-    if applicant_name == '':
+    # Check if user is logged in via session
+    if 'applicant_email' not in session:
         return redirect(url_for('error', message='Please login.'))
-    return render_template('application.html', applicant_first_name=applicant_name, email=request.args.get('applicant_email'))
+    applicant_name = session.get('applicant_name', '')
+    applicant_email = session.get('applicant_email', '')
+    return render_template('application.html', applicant_first_name=applicant_name, email=applicant_email)
 
 @app.route('/save_application', methods=['POST'])
 def saveApplication():
@@ -524,6 +530,12 @@ def saveApplication():
 @app.route('/')
 def index():
     return render_template('index.html')
+
+@app.route('/logout')
+def logout():
+    """Logout the current user."""
+    session.clear()
+    return redirect(url_for('index'))
 
 @app.route('/admin')
 def admin():
