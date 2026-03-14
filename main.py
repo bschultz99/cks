@@ -10,7 +10,9 @@ import time
 import json
 import csv
 from datetime import datetime
-from xhtml2pdf import pisa
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
+from io import BytesIO
 
 app = Flask(__name__)
 
@@ -47,7 +49,8 @@ def check_password(input_password, stored_password):
     return False
 
 def send_pdf(recipient, text_body, subject):
-    email = "bryantschultz99@gmail.com"
+    """Generate a simple PDF with application data and send via email."""
+    sender_email = "bryantschultz99@gmail.com"
     cursor.execute("SELECT * FROM applications WHERE applicant_id = (SELECT applicant_id FROM applicants WHERE email = %s)", (recipient,))
     data = cursor.fetchone()
     
@@ -59,20 +62,43 @@ def send_pdf(recipient, text_body, subject):
     
     cursor.execute("SELECT first_name FROM applicants WHERE email = %s", (recipient,))
     name = cursor.fetchone()[0]
-    application_data['applicant_first_name'] = name
-    email_body = render_template('pdf_application.html', **application_data)
     
-    # Convert the rendered HTML to a PDF
+    # Create a simple PDF with application summary
+    pdf_buffer = BytesIO()
+    c = canvas.Canvas(pdf_buffer, pagesize=letter)
+    c.setFont("Helvetica-Bold", 14)
+    c.drawString(50, 750, f"{name}'s Application")
+    
+    c.setFont("Helvetica", 10)
+    y_position = 720
+    
+    # Add key application fields to PDF
+    for key, value in application_data.items():
+        if value and key not in ['applicant_id', 'application_id', 'updated_at', 'score', 'recommended_scholarship_amount']:
+            label = key.replace('_', ' ').title()
+            text = f"{label}: {value}"
+            if len(text) > 90:
+                text = text[:87] + "..."
+            c.drawString(50, y_position, text)
+            y_position -= 15
+            if y_position < 50:
+                c.showPage()
+                y_position = 750
+    
+    c.save()
+    pdf_buffer.seek(0)
+    
+    # Send email with PDF attachment
     pdf_path = f"{name}.pdf"
-    with open(pdf_path, "w+b") as pdf_file:
-        try:
-            pisa.CreatePDF(email_body, dest=pdf_file)
-        except Exception as e:
-            print(f"Error generating PDF: {e}")
-            return 500
+    with open(pdf_path, 'wb') as f:
+        f.write(pdf_buffer.getvalue())
     
-    # Send the email with the PDF attachment
-    return send_email(email, text_body, subject, pdf_path)
+    try:
+        result = send_email(sender_email, text_body, subject, pdf_path)
+        return result
+    finally:
+        if os.path.exists(pdf_path):
+            os.remove(pdf_path)
 
 
 
